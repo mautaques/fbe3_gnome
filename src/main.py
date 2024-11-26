@@ -21,7 +21,7 @@ import sys
 import gi
 import os
 
-gi.require_version('Gtk', '4.0')
+gi.require_version('Gtk', '3.0')
 gi.require_version('Adw', '1')
 
 from gi.repository import Gtk, Gio, Adw
@@ -77,7 +77,7 @@ class FbeApplication(Adw.Application):
                                 version='0.1.0',
                                 comments="An application for modelling function blocks based on IEC 61499",
                                 license_type=Gtk.License.GPL_3_0,
-                                developers=['Cabral'],
+                                developers=['Cabral']['Mauricio'],
                                 copyright='© 2024 GASR')
         about.present()
 
