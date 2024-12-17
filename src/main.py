@@ -74,10 +74,11 @@ class FbeApplication(Adw.Application):
                                 application_name='Function Block Environment 3',
                                 application_icon='fbe',
                                 developer_name='Claudinei Cabral',
+#                                developer_name='Mauricio Martins Taques Filho',
                                 version='0.1.0',
                                 comments="An application for modelling function blocks based on IEC 61499",
                                 license_type=Gtk.License.GPL_3_0,
-                                developers=['Cabral']['Mauricio'],
+                                developers=['Cabral''Mauricio'],
                                 copyright='© 2024 GASR')
         about.present()
 
