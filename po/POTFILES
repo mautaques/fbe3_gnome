@@ -1,6 +1,0 @@
-data/com.lapas.Fbe.desktop.in
-data/com.lapas.Fbe.metainfo.xml.in
-data/com.lapas.Fbe.gschema.xml
-src/main.py
-src/window.py
-src/window.ui

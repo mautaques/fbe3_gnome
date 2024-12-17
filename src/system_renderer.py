@@ -3,7 +3,7 @@ import gi
 import math
 import cairo
 
-gi.require_version('Gtk', '4.0')
+gi.require_version('Gtk', '3.0')
 
 class SystemRenderer(Gtk.DrawingArea):
     TEXT_GAP = 8

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=fbe
-Exec=fbe
-Icon=com.lapas.Fbe
-Terminal=false
-Type=Application
-Categories=GTK;
-StartupNotify=true

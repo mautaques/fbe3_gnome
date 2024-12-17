@@ -4,7 +4,7 @@ from .function_block import FunctionBlock, ExecutionControlChart, State, Transit
 from .ecc_renderer import EccRenderer
 from .base import PageMixin
 
-gi.require_version('Gtk', '4.0')
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gdk, Gtk
 
 class EccEditor(PageMixin, Gtk.Box):

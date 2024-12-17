@@ -3,7 +3,7 @@ import gi
 import math
 import cairo
 
-gi.require_version('Gtk', '4.0')
+gi.require_version('Gtk', '3.0')
 
 class DeviceRenderer(Gtk.DrawingArea):
     def __init__(self, device, *args, **kwargs):

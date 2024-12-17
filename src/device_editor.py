@@ -1,6 +1,6 @@
 from gi.repository import Gio, Gdk, Gtk, Adw
 
-gi.require_version('Gtk', '4.0')
+gi.require_version('Gtk', '3.0')
 
 class DeviceEditor(PageMixin, Gtk.Box):
     
