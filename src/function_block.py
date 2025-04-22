@@ -16,7 +16,7 @@ class Event():
         self.is_input = is_input
         self.is_selected = False
         self.selected_connection = False
-        self.variables = list() # For now this set is used for keeping the variable name connected to the event
+        self.variables = list()  # For now this set is used for keeping the variable name connected to the event
         self.transitions = list()  
         self.connections = list()
         super().__init__(*args, **kwargs)
@@ -1216,4 +1216,4 @@ class System():
             
         return True
                 
-        
+
