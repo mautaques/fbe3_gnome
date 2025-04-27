@@ -44,6 +44,7 @@ class FbeWindow(Adw.ApplicationWindow):
     move_fb_btn = Gtk.Template.Child()
     remove_fb_btn = Gtk.Template.Child()
     edit_fb_btn = Gtk.Template.Child()
+    # delete_proj_btn = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -58,6 +59,11 @@ class FbeWindow(Adw.ApplicationWindow):
         add_type_action = Gio.SimpleAction(name="add-type")
         add_type_action.connect("activate", self.add_fb_dialog)
         self.add_action(add_type_action)
+        '''
+        delete_action = Gio.SimpleAction(name="delete-project")
+        delete_action.connect("activate", self.delete_project)
+        self.add_action(delete_action)
+        '''
         
         # ---------- Make tool frame's border square ---------- #  
         css_provider = Gtk.CssProvider()
@@ -81,7 +87,12 @@ class FbeWindow(Adw.ApplicationWindow):
         self.connect_fb_btn.connect('clicked', self.connect_function_block)
         self.move_fb_btn.connect('clicked', self.move_function_block)
         self.remove_fb_btn.connect('clicked', self.remove_function_block)
-        
+        '''
+        self.delete_proj_btn.connect('clicked',self.delete_project)
+        # self.delete_btn = Gtk.Button(label="Delete Project", icon_name="user-trash-symbolic")
+        # self.delete_btn.connect("clicked", self.delete_project)
+        # self.delete_btn.set_tooltip_text("Delete current project")
+        '''
         self.directory_list = Gtk.DirectoryList.new(
             attributes=Gio.FILE_ATTRIBUTE_STANDARD_NAME,
             file=Gio.File.new_for_path(".")
@@ -367,4 +378,54 @@ class FbeWindow(Adw.ApplicationWindow):
     def get_selected_tool(self):
         return self.selected_tool
 
+'''
+    def delete_project(self, action=None, param=None):
 
+        # Deleta o projeto atualmente aberto na aba ativa
+
+        current_page = self.notebook.get_current_page()
+        if current_page < 0:
+            return  # No tabs open
+
+
+        #  Obter o widget da aba atual
+        current_widget = self.notebook.get_nth_page(current_page)
+
+        #  Verificar se é um editor de projeto
+        if isinstance(current_widget, ProjectEditor):
+            #  Criar diálogo de confirmação
+            dialog = Adw.MessageDialog(
+                transient_for=self,
+                heading="Delete Project",
+                body="Are you sure you want to delete this project? This action cannot be undone.",
+                close_response="cancel"
+            )
+
+            dialog.add_response("cancel", "Cancel")
+            dialog.add_response("delete", "Delete")
+            dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
+
+            dialog.connect("response", self.on_delete_project_response, current_widget)
+            dialog.present()
+
+    def on_delete_project_response(self, dialog, response, project_widget):
+        if response == "delete":
+            # Fechar a aba do projeto
+            page_num = self.notebook.page_num(project_widget)
+            if page_num >= 0:
+                self.notebook.remove_page(page_num)
+
+            # Aqui você pode adicionar lógica adicional para deletar arquivos físicos se necessário
+            # Por exemplo:
+            # if hasattr(project_widget, 'file_path'):
+            #     try:
+            #         os.remove(project_widget.file_path)
+            #     except Exception as e:
+            #         print(f"Error deleting file: {e}")
+
+            # Mostrar notificação
+            toast = Adw.Toast.new("Project deleted successfully")
+            toast_overlay = Adw.ToastOverlay.new()
+            toast_overlay.add_toast(toast)
+            self.vbox_window.append(toast_overlay)
+'''

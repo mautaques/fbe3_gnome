@@ -43,7 +43,6 @@ class FbeApplication(Adw.Application):
         self.set_accels_for_action('win.open-project', ['<Ctrl>o'])
         self.set_accels_for_action('win.new-app', ['<Ctrl><Shift>n'])
         self.set_accels_for_action('win.rename-app', ['F2'])
-        self.set_accels_for_action('win.delete-app', ['Delete'])
         self.set_accels_for_action('win.show-help-overlay', ['<Ctrl><Shift>question'])
         self.set_accels_for_action('win.system-information', ['<Ctrl>g'])
         self.set_accels_for_action('win.system-configuration', ['<Ctrl>h'])
@@ -70,15 +69,17 @@ class FbeApplication(Adw.Application):
 
     def on_about_action(self, widget, _):
         """Callback for the app.about action."""
-        about = Adw.AboutWindow(transient_for=self.props.active_window,
-                                application_name='Function Block Environment 3',
-                                application_icon='fbe',
-                                developer_name='Claudinei Cabral',
-                                version='0.1.0',
-                                comments="An application for modelling function blocks based on IEC 61499",
-                                license_type=Gtk.License.GPL_3_0,
-                                developers=['Cabral'],
-                                copyright='© 2024 GASR')
+        about = Adw.AboutWindow(
+            transient_for=self.props.active_window,
+            application_name='Function Block Environment 3',
+            application_icon='fbe',
+            developer_name='Claudinei Cabral',
+            version='0.1.0',
+            comments="An application for modelling function blocks based on IEC 61499",
+            license_type=Gtk.License.GPL_3_0,
+            developers=['Cabral'],
+            copyright='© 2024 GASR'
+        )
         about.present()
 
     def create_action(self, name, callback, shortcuts=None):
@@ -87,7 +88,7 @@ class FbeApplication(Adw.Application):
         Args:
             name: the name of the action
             callback: the function to be called when the action is
-              activated
+            activated
             shortcuts: an optional list of accelerators
         """
         action = Gio.SimpleAction.new(name, None)

@@ -221,12 +221,14 @@ class ProjectEditor(PageMixin, Gtk.Box):
         bytes = GLib.Bytes.new(text.encode('utf-8'))
 
         # Start the asynchronous operation to save the data into the file
-        file.replace_contents_bytes_async(bytes,
-                                          None,
-                                          False,
-                                          Gio.FileCreateFlags.NONE,
-                                          None,
-                                          self.save_file_complete)
+        file.replace_contents_bytes_async(
+            bytes,
+            None,
+            False,
+            Gio.FileCreateFlags.NONE,
+            None,
+            self.save_file_complete
+        )
 
     def save_file_complete(self, file, result):
         res = file.replace_contents_finish(result)
@@ -256,4 +258,4 @@ class ProjectEditor(PageMixin, Gtk.Box):
         if self.selected_fb is not None:
             return self.selected_fb.get_name()
         return self
-    
+
