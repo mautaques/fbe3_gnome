@@ -59,11 +59,11 @@ class FbeWindow(Adw.ApplicationWindow):
         add_type_action = Gio.SimpleAction(name="add-type")
         add_type_action.connect("activate", self.add_fb_dialog)
         self.add_action(add_type_action)
-        '''
+        """
         delete_action = Gio.SimpleAction(name="delete-project")
         delete_action.connect("activate", self.delete_project)
         self.add_action(delete_action)
-        '''
+        """
         
         # ---------- Make tool frame's border square ---------- #  
         css_provider = Gtk.CssProvider()
@@ -87,12 +87,12 @@ class FbeWindow(Adw.ApplicationWindow):
         self.connect_fb_btn.connect('clicked', self.connect_function_block)
         self.move_fb_btn.connect('clicked', self.move_function_block)
         self.remove_fb_btn.connect('clicked', self.remove_function_block)
-        '''
+        """
         self.delete_proj_btn.connect('clicked',self.delete_project)
         # self.delete_btn = Gtk.Button(label="Delete Project", icon_name="user-trash-symbolic")
         # self.delete_btn.connect("clicked", self.delete_project)
         # self.delete_btn.set_tooltip_text("Delete current project")
-        '''
+        """
         self.directory_list = Gtk.DirectoryList.new(
             attributes=Gio.FILE_ATTRIBUTE_STANDARD_NAME,
             file=Gio.File.new_for_path(".")
@@ -378,7 +378,7 @@ class FbeWindow(Adw.ApplicationWindow):
     def get_selected_tool(self):
         return self.selected_tool
 
-'''
+    """
     def delete_project(self, action=None, param=None):
 
         # Deleta o projeto atualmente aberto na aba ativa
@@ -428,4 +428,4 @@ class FbeWindow(Adw.ApplicationWindow):
             toast_overlay = Adw.ToastOverlay.new()
             toast_overlay.add_toast(toast)
             self.vbox_window.append(toast_overlay)
-'''
+    """

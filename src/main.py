@@ -57,7 +57,8 @@ class FbeApplication(Adw.Application):
         print(cur_path)
 
     def do_activate(self):
-        """Called when the application is activated.
+        """
+        Called when the application is activated.
 
         We raise the application's main window, creating it if
         necessary.
@@ -83,7 +84,8 @@ class FbeApplication(Adw.Application):
         about.present()
 
     def create_action(self, name, callback, shortcuts=None):
-        """Add an application action.
+        """
+        Add an application action.
 
         Args:
             name: the name of the action
