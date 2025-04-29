@@ -50,12 +50,23 @@ class FbeWindow(Adw.ApplicationWindow):
         super().__init__(**kwargs)
 
         # print(cur_path)
+
+        # Creation of the "new project" action
         new_file_action = Gio.SimpleAction(name="new-project")
         new_file_action.connect("activate", self.new_file_dialog)
         self.add_action(new_file_action)
+
+        # Creation of the "open project" action
         open_action = Gio.SimpleAction(name="open-project")
         open_action.connect("activate", self.open_file_sys_dialog)
         self.add_action(open_action)
+
+        # Creation of the "delete project" action
+        delete_proj_action = Gio.SimpleAction(name="delete-project")
+        delete_proj_action.connect("activate", self.delete_proj_dialog)
+        self.add_action(delete_proj_action)
+
+        # Creation of the "add type" action
         add_type_action = Gio.SimpleAction(name="add-type")
         add_type_action.connect("activate", self.add_fb_dialog)
         self.add_action(add_type_action)
@@ -87,6 +98,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.connect_fb_btn.connect('clicked', self.connect_function_block)
         self.move_fb_btn.connect('clicked', self.move_function_block)
         self.remove_fb_btn.connect('clicked', self.remove_function_block)
+
         """
         self.delete_proj_btn.connect('clicked',self.delete_project)
         # self.delete_btn = Gtk.Button(label="Delete Project", icon_name="user-trash-symbolic")
@@ -178,8 +190,8 @@ class FbeWindow(Adw.ApplicationWindow):
         label = list_item.get_child()
         if file_info:
             label.set_text(file_info.get_name())
-        
 
+    # Method to create a project
     def new_file_dialog(self, action, param=None):
         self.notebook.set_visible(True)
         self.labels_box.set_visible(False)
@@ -189,6 +201,7 @@ class FbeWindow(Adw.ApplicationWindow):
         fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
         self.add_tab_editor(fb_project, system.name, None)
 
+    # Method to open an existing project
     def open_file_dialog(self, action, parameter):
         filters = Gio.ListStore.new(Gtk.FileFilter)
         filter_fbt = Gtk.FileFilter()
@@ -256,6 +269,7 @@ class FbeWindow(Adw.ApplicationWindow):
             print(f"Unable to load the contents of {path}: the file is not encoded with UTF-8")
             return
 
+    # Method to add a function block to the application from the library
     def add_fb_dialog(self, action, param=None):
         # Create a new file selection dialog, using the "open" mode
         filters = Gio.ListStore.new(Gtk.FileFilter)
@@ -289,6 +303,8 @@ class FbeWindow(Adw.ApplicationWindow):
                 toast.add_toast(Adw.Toast(title="Must be inside application editor to add type", timeout=3))
                 self.selected_tool = None
 
+    # ---------------------- Function Blocks Tools -----------------------
+
     def remove_function_block(self, widget):
         self.selected_tool = 'remove'
         print("fb removed")
@@ -304,6 +320,7 @@ class FbeWindow(Adw.ApplicationWindow):
     def inspect_function_block(self, widget):
         self.selected_tool = 'inspect'
         print('inspect selected')
+    # --------------------------------------------------------------------
 
     def set_tab_label_color(self, widget, color = 'label-black'):
 
@@ -325,6 +342,8 @@ class FbeWindow(Adw.ApplicationWindow):
         self.notebook.set_tab_detachable(widget, True)
 
         return notebook
+
+    # ------------------ Delete Project Methods ------------------------
 
     def remove_tab(self, _id):
         if _id < 0:
@@ -378,22 +397,22 @@ class FbeWindow(Adw.ApplicationWindow):
     def get_selected_tool(self):
         return self.selected_tool
 
+    # -----------------------------------------------------------------
+
     """
-    def delete_project(self, action=None, param=None):
+    def delete_project(self, action, param):
 
-        # Deleta o projeto atualmente aberto na aba ativa
-
+        # Delete the actual project opened in the tab
         current_page = self.notebook.get_current_page()
         if current_page < 0:
             return  # No tabs open
 
-
-        #  Obter o widget da aba atual
+        # Get the widget of the current tab
         current_widget = self.notebook.get_nth_page(current_page)
 
-        #  Verificar se é um editor de projeto
+        # Verify if is a project editor
         if isinstance(current_widget, ProjectEditor):
-            #  Criar diálogo de confirmação
+            # Create confirmation dialog
             dialog = Adw.MessageDialog(
                 transient_for=self,
                 heading="Delete Project",
@@ -410,20 +429,12 @@ class FbeWindow(Adw.ApplicationWindow):
 
     def on_delete_project_response(self, dialog, response, project_widget):
         if response == "delete":
-            # Fechar a aba do projeto
+            # Close the project tab
             page_num = self.notebook.page_num(project_widget)
             if page_num >= 0:
                 self.notebook.remove_page(page_num)
 
-            # Aqui você pode adicionar lógica adicional para deletar arquivos físicos se necessário
-            # Por exemplo:
-            # if hasattr(project_widget, 'file_path'):
-            #     try:
-            #         os.remove(project_widget.file_path)
-            #     except Exception as e:
-            #         print(f"Error deleting file: {e}")
-
-            # Mostrar notificação
+            # Show notification
             toast = Adw.Toast.new("Project deleted successfully")
             toast_overlay = Adw.ToastOverlay.new()
             toast_overlay.add_toast(toast)
