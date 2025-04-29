@@ -70,11 +70,6 @@ class FbeWindow(Adw.ApplicationWindow):
         add_type_action = Gio.SimpleAction(name="add-type")
         add_type_action.connect("activate", self.add_fb_dialog)
         self.add_action(add_type_action)
-        """
-        delete_action = Gio.SimpleAction(name="delete-project")
-        delete_action.connect("activate", self.delete_project)
-        self.add_action(delete_action)
-        """
         
         # ---------- Make tool frame's border square ---------- #  
         css_provider = Gtk.CssProvider()
@@ -320,7 +315,8 @@ class FbeWindow(Adw.ApplicationWindow):
     def inspect_function_block(self, widget):
         self.selected_tool = 'inspect'
         print('inspect selected')
-    # --------------------------------------------------------------------
+
+    # ---------------- Project Tabs Methods -----------------------
 
     def set_tab_label_color(self, widget, color = 'label-black'):
 
