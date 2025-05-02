@@ -62,7 +62,7 @@ class FbeWindow(Adw.ApplicationWindow):
 
         # Creation of the "delete project" action
         delete_proj_action = Gio.SimpleAction(name="delete-project")
-        delete_proj_action.connect("activate", self.delete_project)
+        delete_proj_action.connect("activate", self.on_close_tab)
         self.add_action(delete_proj_action)
 
         # Creation of the "add type" action
@@ -85,9 +85,8 @@ class FbeWindow(Adw.ApplicationWindow):
         # self.vbox_window.append(self.menu)
         self.selected_tool = None
         self.library = None  # Library path to load nested elements
-        self.notebook.connect('create-window', self.on_notebookbook_create_window)
-        # self.notebook.connect('page-removed', self.on_notebookbook_page_removed)
-        # self.notebook.connect('project-deleted', self.delete_project)
+        self.notebook.connect('create-window', self.on_notebook_create_window)
+        self.notebook.connect('page-removed', self.on_notebook_page_removed)
         self.add_fb_btn.connect('clicked', self.add_fb_dialog)
         self.edit_fb_btn.connect('clicked',self.inspect_function_block)
         self.connect_fb_btn.connect('clicked', self.connect_function_block)
@@ -189,52 +188,6 @@ class FbeWindow(Adw.ApplicationWindow):
         window = self.get_ancestor(Gtk.Window)
         fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
         self.add_tab_editor(fb_project, system.name, None)
-
-    # Method to delete a project
-    def delete_project(self, action, param=None):
-        self.notebook.set_visible(True)
-        self.labels_box.set_visible(False)
-
-        '''
-        # Delete the actual project opened in the tab
-        current_page = self.notebook.get_current_page()
-        if current_page < 0:
-            return  # No tabs open
-
-        # Get the widget of the current tab
-        current_widget = self.notebook.get_nth_page(current_page)
-
-        # Verify if is a project editor
-        if isinstance(current_widget, ProjectEditor):
-            # Create confirmation dialog
-            dialog = Adw.MessageDialog(
-                transient_for=self,
-                heading="Delete Project",
-                body="Are you sure you want to delete this project? This action cannot be undone.",
-                close_response="cancel"
-            )
-
-            dialog.add_response("cancel", "Cancel")
-            dialog.add_response("delete", "Delete")
-            dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
-
-            dialog.connect("response", self.on_delete_project_response, current_widget)
-            dialog.present()
-        '''
-    '''
-    def on_delete_project_response(self, dialog, response, project_widget):
-        if response == "delete":
-            # Close the project tab
-            page_num = self.notebook.page_num(project_widget)
-            if page_num >= 0:
-                self.notebook.remove_page(page_num)
-
-            # Show notification
-            toast = Adw.Toast.new("Project deleted successfully")
-            toast_overlay = Adw.ToastOverlay.new()
-            toast_overlay.add_toast(toast)
-            self.vbox_window.append(toast_overlay)
-    '''
 
     # Method to open an existing project
     def open_file_dialog(self, action, parameter):
@@ -358,9 +311,8 @@ class FbeWindow(Adw.ApplicationWindow):
 
     # ---------------- Project Tabs Methods -----------------------
 
-
-    def on_notebookbook_create_window(self,notebookbook,widget,x,y):
-        # handler for dropping outside of notebookbook
+    def on_notebook_create_window(self,notebook,widget,x,y):
+        # handler for dropping outside of notebook
         new_window = self.props.application.add_window()
 
         new_window.move(x, y)
@@ -423,8 +375,8 @@ class FbeWindow(Adw.ApplicationWindow):
         self.notebook.remove_page(_id)
         return True
 
-    def on_notebookbook_page_removed(self, notebookbook, child, page):
-        if notebookbook.get_n_pages() == 0:
+    def on_notebook_page_removed(self, notebook, child, page):
+        if notebook.get_n_pages() == 0:
             self.close()
         return True
 
@@ -437,7 +389,19 @@ class FbeWindow(Adw.ApplicationWindow):
 
     # -----------------------------------------------------------------
 
-    """
+    def on_delete_project_response(self, dialog, response, project_widget):
+        if response == "delete":
+            # Close the project tab
+            page_num = self.notebook.page_num(project_widget)
+            if page_num >= 0:
+                self.notebook.remove_page(page_num)
+
+            # Show notification
+            toast = Adw.Toast.new("Project deleted successfully")
+            toast_overlay = Adw.ToastOverlay.new()
+            toast_overlay.add_toast(toast)
+            self.vbox_window.append(toast_overlay)
+
     def delete_project(self, action, param):
 
         # Delete the actual project opened in the tab
@@ -464,17 +428,3 @@ class FbeWindow(Adw.ApplicationWindow):
 
             dialog.connect("response", self.on_delete_project_response, current_widget)
             dialog.present()
-
-    def on_delete_project_response(self, dialog, response, project_widget):
-        if response == "delete":
-            # Close the project tab
-            page_num = self.notebook.page_num(project_widget)
-            if page_num >= 0:
-                self.notebook.remove_page(page_num)
-
-            # Show notification
-            toast = Adw.Toast.new("Project deleted successfully")
-            toast_overlay = Adw.ToastOverlay.new()
-            toast_overlay.add_toast(toast)
-            self.vbox_window.append(toast_overlay)
-    """

@@ -161,7 +161,7 @@ class SystemConfigEditor(PageMixin, Gtk.Box):
         
     def type_text_edited(self, widget, path, new_type):
         resource = self.resources_liststore[path][3]
-        new_resource = convert_xml_resource('Projects/fbe3_gnome/src/models/fb_library/'+new_type+'.res')
+        new_resource = convert_xml_resource('tqs/fbe3_gnome/src/models/fb_library/'+new_type+'.res')
         if self.selected_device is None:
             self.last_selected_device.resource_change_type(resource, new_type, new_resource)            
         else:
