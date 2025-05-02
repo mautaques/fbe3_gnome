@@ -341,55 +341,7 @@ class FbeWindow(Adw.ApplicationWindow):
 
         return notebook
 
-    # ------------------ Delete Project Methods (cabral)------------------------
-
-    '''
-    def remove_current_tab(self, *args):
-        _id = self.notebook.get_current_page()
-        self.remove_tab(_id)
-
-    def remove_tabs(self):
-        while self.notebook.get_n_pages() > 0:
-            if self.remove_tab(0) == False:
-                return False  # at least one tab canceled
-        return True  # was able to close all tabs
-
-    def get_current_tab_widget(self):
-        _id = self.notebook.get_current_page()
-        return self.notebook.get_nth_page(_id)
-
-    def remove_tab(self, _id):
-        if _id < 0:
-            return False
-
-        self.notebook.set_current_page(_id)
-
-        widget = self.notebook.get_nth_page(_id)
-        if widget.has_changes_to_save():
-            result = self._popup(widget.get_tab_name())
-            if result == Gtk.ResponseType.CANCEL:
-                return False
-            elif result == Gtk.ResponseType.APPLY:  # save
-                if not widget.save():
-                    if  not self._save_dialog(widget):
-                        return False
-        self.notebook.remove_page(_id)
-        return True
-
-    def on_notebook_page_removed(self, notebook, child, page):
-        if notebook.get_n_pages() == 0:
-            self.close()
-        return True
-
-    # Função chamada pela interface
-
-    def on_close_tab(self, action, param):
-        self.remove_current_tab()
-
-    def get_selected_tool(self):
-        return self.selected_tool
-    '''
-    # ----------------Delete Project Methods (mau)----------------
+    # ----------------Delete Project Methods ----------------
 
     def on_delete_project_response(self, dialog, response, project_widget):
         if response == "delete":
