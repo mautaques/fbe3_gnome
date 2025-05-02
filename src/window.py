@@ -62,7 +62,7 @@ class FbeWindow(Adw.ApplicationWindow):
 
         # Creation of the "delete project" action
         delete_proj_action = Gio.SimpleAction(name="delete-project")
-        delete_proj_action.connect("activate", self.on_close_tab)
+        delete_proj_action.connect("activate", self.delete_project)
         self.add_action(delete_proj_action)
 
         # Creation of the "add type" action
@@ -86,7 +86,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.selected_tool = None
         self.library = None  # Library path to load nested elements
         self.notebook.connect('create-window', self.on_notebook_create_window)
-        self.notebook.connect('page-removed', self.on_notebook_page_removed)
+        self.notebook.connect('page-removed', self.delete_project)
         self.add_fb_btn.connect('clicked', self.add_fb_dialog)
         self.edit_fb_btn.connect('clicked',self.inspect_function_block)
         self.connect_fb_btn.connect('clicked', self.connect_function_block)
@@ -309,7 +309,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.selected_tool = 'inspect'
         print('inspect selected')
 
-    # ---------------- Project Tabs Methods -----------------------
+    # --------------------- Project Tabs Methods ----------------------------
 
     def on_notebook_create_window(self,notebook,widget,x,y):
         # handler for dropping outside of notebook
@@ -341,8 +341,9 @@ class FbeWindow(Adw.ApplicationWindow):
 
         return notebook
 
-    # ------------------ Delete Project Methods ------------------------
+    # ------------------ Delete Project Methods (cabral)------------------------
 
+    '''
     def remove_current_tab(self, *args):
         _id = self.notebook.get_current_page()
         self.remove_tab(_id)
@@ -381,13 +382,14 @@ class FbeWindow(Adw.ApplicationWindow):
         return True
 
     # Função chamada pela interface
+
     def on_close_tab(self, action, param):
         self.remove_current_tab()
 
     def get_selected_tool(self):
         return self.selected_tool
-
-    # -----------------------------------------------------------------
+    '''
+    # ----------------Delete Project Methods (mau)----------------
 
     def on_delete_project_response(self, dialog, response, project_widget):
         if response == "delete":
@@ -395,6 +397,9 @@ class FbeWindow(Adw.ApplicationWindow):
             page_num = self.notebook.page_num(project_widget)
             if page_num >= 0:
                 self.notebook.remove_page(page_num)
+
+                if page_num == 0:
+                    self.labels_box.set_visible(True)
 
             # Show notification
             toast = Adw.Toast.new("Project deleted successfully")

@@ -41,6 +41,7 @@ class FbeApplication(Adw.Application):
         self.create_action('about', self.on_about_action, ['<Ctrl>m'])
         self.set_accels_for_action('win.new-project', ['<Ctrl>n'])
         self.set_accels_for_action('win.open-project', ['<Ctrl>o'])
+        self.set_accels_for_action('win.delete-project', ['<Ctrl>r'])
         self.set_accels_for_action('win.new-app', ['<Ctrl><Shift>n'])
         self.set_accels_for_action('win.rename-app', ['F2'])
         self.set_accels_for_action('win.show-help-overlay', ['<Ctrl><Shift>question'])
