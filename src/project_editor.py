@@ -56,7 +56,6 @@ class ProjectEditor(PageMixin, Gtk.Box):
         
         self._create_action("export-project", self.on_export_project)
         # self._create_action("save-project", self.on_save_project)
-        # self._create_action("save-as-project", self.on_save_as_project)
         self._create_action("system-information", self.on_system_information)
         self._create_action("system-configuration", self.on_system_configuration)
         self._create_action("apps-swipe-left", self.on_apps_swipe_left)
@@ -69,7 +68,7 @@ class ProjectEditor(PageMixin, Gtk.Box):
         self.project_bar.pack_start(self.project_menu_button)
         self.project_bar.pack_start(self.current_page_label)
           
-
+    # -------------- Methods to create actions ----------------------
     def _create_action(self, action_name, callback, *args):
         action = Gio.SimpleAction.new(action_name, None)
         if not args:
@@ -84,7 +83,9 @@ class ProjectEditor(PageMixin, Gtk.Box):
         action_label = label+suffix
         self._create_action(action_label, callback, elem)
         menu.append(label, "win."+action_label)
-        
+    # ---------------------------------------------------------------
+
+    # System configuration method
     def build_system_config_menu(self):
         for dev in self.system.devices:
             self._action_append_menu(self.sys_config_submenu, dev, '-dev', self.on_application_editor)

@@ -221,9 +221,7 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">_Save</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Save as</attribute>
+        <attribute name="action">win.save-project</attribute>
       </item>
     </section>
     <section>
