@@ -143,7 +143,7 @@ class FbeWindow(Adw.ApplicationWindow):
 
     # ------------------ Load Library Methods ---------------------
 
-    def load_files(self, directory="/home/tqs/fbe3_gnome/src/models/fb_library/"):
+    def load_files(self, directory="home/tqs/fbe3_gnome/src/models/fb_library/"):
         self.library = directory
         directory = Gio.File.new_for_path(directory)
         self.directory_list.set_file(directory)
@@ -278,6 +278,10 @@ class FbeWindow(Adw.ApplicationWindow):
 
     def on_add_library_fb(self, action, param=None):
         pass
+
+    def get_current_tab_widget(self):
+        _id = self.notebook.get_current_page()
+        return self.notebook.get_nth_page(_id)
 
     def on_add_response(self, dialog, result):
         self.selected_tool = 'add'

@@ -13,9 +13,10 @@ def convert_xml_basic_fb(xml, library):
     fb_import_list = set()
     try:
         tree = ET.parse(xml)
+        root = tree.getroot()
     except:
-        print('invalid path')
-    root = tree.getroot()
+        print('Invalid path')
+
     fb_diagram = None
     for read in root.iter("FBType"):
         fb_name = read.get("Name")
@@ -350,8 +351,13 @@ def convert_xml_basic_fb(xml, library):
     return FB, fb_diagram
 
 def convert_xml_resource(xml, library):
-    tree = ET.parse(xml)
-    root = tree.getroot()
+    try:
+        tree = ET.parse(xml)
+        root = tree.getroot()
+    except:
+        print("Invalid path")
+        return None
+
     for read in root.iter("ResourceType"):
         name = read.get("Name")
         comment = read.get("Comment")
@@ -396,16 +402,15 @@ def convert_xml_resource(xml, library):
 
 
 def convert_xml_system(xml, library):
-
     try:
         tree = ET.parse(xml)
         root = tree.getroot()
-    except Exception as e:
-        print(f"Erro ao abrir projeto: {e}")
+    except:
+        print("Invalid path")
         return None
 
-    #tree = ET.parse(xml)
-    #root = tree.getroot()
+    # tree = ET.parse(xml)
+    # root = tree.getroot()
     fb_import_list = set()
     for read in root.iter("System"):
         system_name = read.get("Name")

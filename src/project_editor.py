@@ -55,6 +55,8 @@ class ProjectEditor(PageMixin, Gtk.Box):
         self.project_menu_button.set_label('THIS PROJECT')
         
         self._create_action("export-project", self.on_export_project)
+        # self._create_action("save-project", self.on_save_project)
+        # self._create_action("save-as-project", self.on_save_as_project)
         self._create_action("system-information", self.on_system_information)
         self._create_action("system-configuration", self.on_system_configuration)
         self._create_action("apps-swipe-left", self.on_apps_swipe_left)
