@@ -141,11 +141,13 @@ class FbeWindow(Adw.ApplicationWindow):
         factory.connect("bind", self.on_factory_bind)
         return factory
 
-    def load_files(self, directory="Projects/fbe3_gnome/src/models/fb_library/"):
+    # ------------------ Load Library Methods ---------------------
+
+    def load_files(self, directory="/home/tqs/fbe3_gnome/src/models/fb_library/"):
         self.library = directory
         directory = Gio.File.new_for_path(directory)
         self.directory_list.set_file(directory)
-        
+
     def on_choose_button_clicked(self, widget):
         dialog = Gtk.FileChooserDialog(
             title="Choose Directory",
@@ -166,6 +168,8 @@ class FbeWindow(Adw.ApplicationWindow):
             self.load_files(selected_folder)
         dialog.destroy()
 
+    # ------------------ Refresh Library Methods ------------------
+
     def on_refresh_button_clicked(self, widget):
         self.load_files()
 
@@ -179,6 +183,8 @@ class FbeWindow(Adw.ApplicationWindow):
         if file_info:
             label.set_text(file_info.get_name())
 
+    # ------------------------------------------------------------
+
     # Method to create a project
     def new_file_dialog(self, action, param=None):
         self.notebook.set_visible(True)
@@ -190,6 +196,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.add_tab_editor(fb_project, system.name, None)
 
     # Method to open an existing project
+
     def open_file_dialog(self, action, parameter):
         filters = Gio.ListStore.new(Gtk.FileFilter)
         filter_fbt = Gtk.FileFilter()
@@ -308,6 +315,9 @@ class FbeWindow(Adw.ApplicationWindow):
     def inspect_function_block(self, widget):
         self.selected_tool = 'inspect'
         print('inspect selected')
+
+    def get_selected_tool(self):
+        return self.selected_tool
 
     # --------------------- Project Tabs Methods ----------------------------
 

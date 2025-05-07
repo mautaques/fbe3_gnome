@@ -189,6 +189,8 @@ class SystemEditor(PageMixin, Gtk.Box):
     def update_application_list(self):
         self.apps_listbox.remove_all()
         self.build_application_list()
+
+    # ------------ Rename Application Methods -----------------
     
     def app_rename_dialog(self, label):
         dialog = Gtk.Dialog(title="Rename app", transient_for=self.window, halign=Gtk.Align.FILL, valign=Gtk.Align.FILL)
@@ -220,19 +222,23 @@ class SystemEditor(PageMixin, Gtk.Box):
             buffer = None
             if(widget == -5):
                 new_name = entry.get_buffer().get_text()
-                if self.system.application_rename(app, new_name): 
-                    if self.rgt_click_row is not None:
-                        label = self.rgt_click_row.get_child()
-                        label.set_label(new_name)
+                if self.system.application_rename(app, new_name):
+                    if " " in new_name:
+                        toast.add_toast(Adw.Toast(title="The app's name cannot contain spaces!", timeout=3))
+
                     else:
-                        label = self.apps_listbox.get_selected_row().get_child()
-                        label.set_label(new_name)
-                    self.project._action_append_menu(self.project.apps_submenu, app, '-app', self.project.on_application_editor)
-                    self.project.update_application_menu()
-                    self.rgt_click_app = None
-                    self.rgt_click_row = None 
-                    toast.add_toast(Adw.Toast(title="Application renamed", timeout=3))
-                    dialog.destroy()
+                        if self.rgt_click_row is not None:
+                            label = self.rgt_click_row.get_child()
+                            label.set_label(new_name)
+                        else:
+                            label = self.apps_listbox.get_selected_row().get_child()
+                            label.set_label(new_name)
+                        self.project._action_append_menu(self.project.apps_submenu, app, '-app', self.project.on_application_editor)
+                        self.project.update_application_menu()
+                        self.rgt_click_app = None
+                        self.rgt_click_row = None
+                        toast.add_toast(Adw.Toast(title="Application renamed", timeout=3))
+                        dialog.destroy()
                 else:
                     toast.add_toast(Adw.Toast(title="There's an app with the same name already!", timeout=3))
             else:
@@ -241,6 +247,17 @@ class SystemEditor(PageMixin, Gtk.Box):
         dialog.connect("response", destroy_dialog, app)
 
         dialog.show()
+
+    def on_rename_app(self, action, param=None, app=None):
+        selected_row = self.apps_listbox.get_selected_row()
+        if selected_row:
+            label = selected_row.get_child()
+            app = self.system.application_get(label.get_label())
+            self.app_rename_dialog(app.name)
+        elif self.rgt_click_app is not None:
+            self.app_rename_dialog(self.rgt_click_app.name)
+
+    # ----------------------------------------------------------
 
     def _create_action(self, action_name, callback, *args):
         action = Gio.SimpleAction.new(action_name, None)
@@ -321,16 +338,6 @@ class SystemEditor(PageMixin, Gtk.Box):
         self.project._action_append_menu(self.project.apps_submenu, app, '-app', self.project.on_application_editor)
         self.project.update_application_menu()
         self.apps_listbox.unselect_all()
-    
-    def on_rename_app(self, action, param=None, app=None):
-        selected_row = self.apps_listbox.get_selected_row()
-        if selected_row:
-            label = selected_row.get_child()
-            app = self.system.application_get(label.get_label())
-            self.app_rename_dialog(app.name)
-        elif self.rgt_click_app is not None:
-            self.app_rename_dialog(self.rgt_click_app.name)
-      
             
     def on_delete_app(self, action, param=None, app=None):
         toast = Adw.ToastOverlay()

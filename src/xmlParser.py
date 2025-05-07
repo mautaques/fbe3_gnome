@@ -396,8 +396,16 @@ def convert_xml_resource(xml, library):
 
 
 def convert_xml_system(xml, library):
-    tree = ET.parse(xml)
-    root = tree.getroot()
+
+    try:
+        tree = ET.parse(xml)
+        root = tree.getroot()
+    except Exception as e:
+        print(f"Erro ao abrir projeto: {e}")
+        return None
+
+    #tree = ET.parse(xml)
+    #root = tree.getroot()
     fb_import_list = set()
     for read in root.iter("System"):
         system_name = read.get("Name")
