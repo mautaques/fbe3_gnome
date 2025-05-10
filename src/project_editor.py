@@ -181,6 +181,7 @@ class ProjectEditor(PageMixin, Gtk.Box):
             self.last_page_label = current_page_label
             self.vpaned.set_end_child(self.current_page)
             
+    # Project exportation method
     def on_export_project(self, action, param=None):
         self.last_page = self.current_page
         self.last_page_label = self.current_page_label.get_label()

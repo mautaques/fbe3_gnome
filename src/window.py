@@ -142,7 +142,6 @@ class FbeWindow(Adw.ApplicationWindow):
         return factory
 
     # ------------------ Load Library Methods ---------------------
-
     def load_files(self, directory="home/tqs/fbe3_gnome/src/models/fb_library/"):
         self.library = directory
         directory = Gio.File.new_for_path(directory)
@@ -195,8 +194,7 @@ class FbeWindow(Adw.ApplicationWindow):
         fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
         self.add_tab_editor(fb_project, system.name, None)
 
-    # Method to open an existing project
-
+    # --------------- Method to open an existing project ----------------------
     def open_file_dialog(self, action, parameter):
         filters = Gio.ListStore.new(Gtk.FileFilter)
         filter_fbt = Gtk.FileFilter()
@@ -250,7 +248,6 @@ class FbeWindow(Adw.ApplicationWindow):
         file.load_contents_async(None, self.open_file_complete)
 
     def open_file_complete(self, file, result):
-
         contents = file.load_contents_finish(result)
         if not contents[0]:
             path = file.peek_path()
@@ -263,6 +260,7 @@ class FbeWindow(Adw.ApplicationWindow):
             path = file.peek_path()
             print(f"Unable to load the contents of {path}: the file is not encoded with UTF-8")
             return
+    # ------------------------------------------------------------------------
 
     # Method to add a function block to the application from the library
     def add_fb_dialog(self, action, param=None):
