@@ -222,29 +222,33 @@ class FbeWindow(Adw.ApplicationWindow):
         file = dialog.open_finish(result)
         file_name = file.get_path()
 
-        current_page = self.notebook.get_current_page()
+        # current_page = self.notebook.get_current_page()
 
-        if file_name == "home/tqs/fbe3_gnome/src/models/fb_library/":
-            print(file_name)
+        print(file_name)
+
+        # if file_name == "home/tqs/fbe3_gnome/src/models/fb_library/":
+
             # If the user selected a file...
-            if file is not None:
-                self.notebook.set_visible(True)
-                self.labels_box.set_visible(False)
-                window = self.get_ancestor(Gtk.Window)
-                system = convert_xml_system(file_name, self.library)
-                fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
-                self.add_tab_editor(fb_project, system.name, None)
-        elif project_widget == -1:
+        if file is not None:
+            self.notebook.set_visible(True)
+            self.labels_box.set_visible(False)
+            window = self.get_ancestor(Gtk.Window)
+            system = convert_xml_system(file_name, self.library)
+            fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
+            self.add_tab_editor(fb_project, system.name, None)
+        '''
+        elif current_page == -1:
             self.labels_box.set_visible(True)
-            toast = Adw.Toast.new("Blocks declared in FBNetwork must be inside src/models/diac_library")
+            toast = Adw.Toast.new("Projects must be inside src/models/fb_library")
             toast_overlay = Adw.ToastOverlay.new()
             toast_overlay.add_toast(toast)
             self.vbox_window.append(toast_overlay)
         else:
-            toast = Adw.Toast.new("Blocks declared in FBNetwork must be inside src/models/diac_library")
+            toast = Adw.Toast.new("Projects must be inside src/models/fb_library")
             toast_overlay = Adw.ToastOverlay.new()
             toast_overlay.add_toast(toast)
             self.vbox_window.append(toast_overlay)
+        '''
 
     def on_open_response(self, dialog, result):
         file = dialog.open_finish(result)

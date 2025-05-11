@@ -11,6 +11,7 @@ from .function_block import *
 def convert_xml_basic_fb(xml, library):
     print(f'XML PATH = {xml}\nLIBRARY PATH = {library}')
     fb_import_list = set()
+
     try:
         tree = ET.parse(xml)
         root = tree.getroot()
@@ -351,12 +352,8 @@ def convert_xml_basic_fb(xml, library):
     return FB, fb_diagram
 
 def convert_xml_resource(xml, library):
-    try:
-        tree = ET.parse(xml)
-        root = tree.getroot()
-    except:
-        print("Invalid path")
-        return None
+    tree = ET.parse(xml)
+    root = tree.getroot()
 
     for read in root.iter("ResourceType"):
         name = read.get("Name")
@@ -402,16 +399,10 @@ def convert_xml_resource(xml, library):
 
 
 def convert_xml_system(xml, library):
-    try:
-        tree = ET.parse(xml)
-        root = tree.getroot()
-    except:
-        print("Invalid path")
-        return None
-
-    # tree = ET.parse(xml)
-    # root = tree.getroot()
+    tree = ET.parse(xml)
+    root = tree.getroot()
     fb_import_list = set()
+
     for read in root.iter("System"):
         system_name = read.get("Name")
         system_comment = read.get("Comment")
