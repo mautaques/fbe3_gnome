@@ -190,7 +190,7 @@ class SystemEditor(PageMixin, Gtk.Box):
         self.apps_listbox.remove_all()
         self.build_application_list()
 
-    # ------------ Rename Application Methods -----------------
+    # ------------ Methods to rename the application -----------------
     
     def app_rename_dialog(self, label):
         dialog = Gtk.Dialog(title="Rename app", transient_for=self.window, halign=Gtk.Align.FILL, valign=Gtk.Align.FILL)

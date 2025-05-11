@@ -52,15 +52,23 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Save project</property>
-                <property name="action-name">win.save</property>
+                <property name="title" translatable="yes" context="shortcut window">Rename Project</property>
+                <property name="action-name">win.rename-project</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Save project as</property>
-                <property name="action-name">win.save-as</property>
+                <property name="title" translatable="yes" context="shortcut window">Delete Project</property>
+                <property name="action-name">win.delete-project</property>
               </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Save project</property>
+                <property name="action-name">win.save-project</property>
+              </object>
+            </child>
+            <child>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">

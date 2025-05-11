@@ -168,7 +168,6 @@ class FbeWindow(Adw.ApplicationWindow):
         dialog.destroy()
 
     # ------------------ Refresh Library Methods ------------------
-
     def on_refresh_button_clicked(self, widget):
         self.load_files()
 
@@ -194,7 +193,7 @@ class FbeWindow(Adw.ApplicationWindow):
         fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
         self.add_tab_editor(fb_project, system.name, None)
 
-    # --------------- Method to open an existing project ----------------------
+    # --------------- Methods to open an existing project ----------------------
     def open_file_dialog(self, action, parameter):
         filters = Gio.ListStore.new(Gtk.FileFilter)
         filter_fbt = Gtk.FileFilter()
@@ -215,19 +214,38 @@ class FbeWindow(Adw.ApplicationWindow):
         native.set_filters(filters)
         native.open(self, None, self.on_open_project_response)
 
+    def get_current_tab_widget(self):
+        _id = self.notebook.get_current_page()
+        return self.notebook.get_nth_page(_id)
+
     def on_open_project_response(self, dialog, result):
         file = dialog.open_finish(result)
         file_name = file.get_path()
-        print(file_name)
-        # If the user selected a file...
-        if file is not None:
-            self.notebook.set_visible(True)
-            self.labels_box.set_visible(False)
-            window = self.get_ancestor(Gtk.Window)
-            system = convert_xml_system(file_name, self.library)
-            fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
-            self.add_tab_editor(fb_project, system.name, None)
-    
+
+        current_page = self.notebook.get_current_page()
+
+        if file_name == "home/tqs/fbe3_gnome/src/models/fb_library/":
+            print(file_name)
+            # If the user selected a file...
+            if file is not None:
+                self.notebook.set_visible(True)
+                self.labels_box.set_visible(False)
+                window = self.get_ancestor(Gtk.Window)
+                system = convert_xml_system(file_name, self.library)
+                fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
+                self.add_tab_editor(fb_project, system.name, None)
+        elif project_widget == -1:
+            self.labels_box.set_visible(True)
+            toast = Adw.Toast.new("Blocks declared in FBNetwork must be inside src/models/diac_library")
+            toast_overlay = Adw.ToastOverlay.new()
+            toast_overlay.add_toast(toast)
+            self.vbox_window.append(toast_overlay)
+        else:
+            toast = Adw.Toast.new("Blocks declared in FBNetwork must be inside src/models/diac_library")
+            toast_overlay = Adw.ToastOverlay.new()
+            toast_overlay.add_toast(toast)
+            self.vbox_window.append(toast_overlay)
+
     def on_open_response(self, dialog, result):
         file = dialog.open_finish(result)
         file_name = file.get_path()
@@ -276,11 +294,11 @@ class FbeWindow(Adw.ApplicationWindow):
 
     def on_add_library_fb(self, action, param=None):
         pass
-
+    '''
     def get_current_tab_widget(self):
         _id = self.notebook.get_current_page()
         return self.notebook.get_nth_page(_id)
-
+    '''
     def on_add_response(self, dialog, result):
         self.selected_tool = 'add'
         file = dialog.open_finish(result)
@@ -353,7 +371,7 @@ class FbeWindow(Adw.ApplicationWindow):
 
         return notebook
 
-    # ----------------Delete Project Methods ----------------
+    # ---------------- Methods to delete a project tab ---------------
 
     def on_delete_project_response(self, dialog, response, project_widget):
         if response == "delete":
