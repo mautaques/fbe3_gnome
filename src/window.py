@@ -258,6 +258,14 @@ class FbeWindow(Adw.ApplicationWindow):
         if file is not None:
             # ... open it
             fb_choosen, _  = convert_xml_basic_fb(file_name, self.library)
+
+            if fb_choosen == None:
+                self.labels_box.set_visible(True)
+                toast = Adw.Toast.new("Projects must be inside src/models/fb_library/testing")
+                toast_overlay = Adw.ToastOverlay.new()
+                toast_overlay.add_toast(toast)
+                self.vbox_window.append(toast_overlay)
+
             fb_diagram = Composite()
             fb_diagram.add_function_block(fb_choosen)
             self.add_tab_editor(fb_diagram, fb_choosen.name, fb_choosen)

@@ -11,14 +11,14 @@ from .function_block import *
 def convert_xml_basic_fb(xml, library):
     print(f'XML PATH = {xml}\nLIBRARY PATH = {library}')
     fb_import_list = set()
-
     try:
         tree = ET.parse(xml)
-        root = tree.getroot()
     except:
         print('Invalid path')
-
+        return None, None
+    root = tree.getroot()
     fb_diagram = None
+
     for read in root.iter("FBType"):
         fb_name = read.get("Name")
         fb_comment = read.get("Comment")
