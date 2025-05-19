@@ -221,8 +221,7 @@ class FbeWindow(Adw.ApplicationWindow):
     def on_open_project_response(self, dialog, result):
         file = dialog.open_finish(result)
         file_name = file.get_path()
-
-        # current_page = self.notebook.get_current_page()
+        current_page = self.notebook.get_current_page()
 
         print(file_name)
 
@@ -234,21 +233,21 @@ class FbeWindow(Adw.ApplicationWindow):
             self.labels_box.set_visible(False)
             window = self.get_ancestor(Gtk.Window)
             system = convert_xml_system(file_name, self.library)
+            if system is None:
+                if current_page < 0:
+                    self.labels_box.set_visible(True)
+                    toast = Adw.Toast.new("Projects must be inside src/models/fb_library")
+                    toast_overlay = Adw.ToastOverlay.new()
+                    toast_overlay.add_toast(toast)
+                    self.vbox_window.append(toast_overlay)
+
+                else:
+                    toast = Adw.Toast.new("Projects must be inside src/models/fb_library")
+                    toast_overlay = Adw.ToastOverlay.new()
+                    toast_overlay.add_toast(toast)
+                    self.vbox_window.append(toast_overlay)
             fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
             self.add_tab_editor(fb_project, system.name, None)
-        '''
-        elif current_page == -1:
-            self.labels_box.set_visible(True)
-            toast = Adw.Toast.new("Projects must be inside src/models/fb_library")
-            toast_overlay = Adw.ToastOverlay.new()
-            toast_overlay.add_toast(toast)
-            self.vbox_window.append(toast_overlay)
-        else:
-            toast = Adw.Toast.new("Projects must be inside src/models/fb_library")
-            toast_overlay = Adw.ToastOverlay.new()
-            toast_overlay.add_toast(toast)
-            self.vbox_window.append(toast_overlay)
-        '''
 
     def on_open_response(self, dialog, result):
         file = dialog.open_finish(result)
@@ -258,14 +257,6 @@ class FbeWindow(Adw.ApplicationWindow):
         if file is not None:
             # ... open it
             fb_choosen, _  = convert_xml_basic_fb(file_name, self.library)
-
-            if fb_choosen == None:
-                self.labels_box.set_visible(True)
-                toast = Adw.Toast.new("Projects must be inside src/models/fb_library/testing")
-                toast_overlay = Adw.ToastOverlay.new()
-                toast_overlay.add_toast(toast)
-                self.vbox_window.append(toast_overlay)
-
             fb_diagram = Composite()
             fb_diagram.add_function_block(fb_choosen)
             self.add_tab_editor(fb_diagram, fb_choosen.name, fb_choosen)

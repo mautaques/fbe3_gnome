@@ -19,6 +19,8 @@ def convert_xml_basic_fb(xml, library):
     root = tree.getroot()
     fb_diagram = None
 
+    print(f'XML PATH = {xml}\nLIBRARY PATH = {library}')
+
     for read in root.iter("FBType"):
         fb_name = read.get("Name")
         fb_comment = read.get("Comment")
@@ -80,7 +82,7 @@ def convert_xml_basic_fb(xml, library):
     for read in root.iter("FBNetwork"):
         fb_diagram = Composite()    
         for read_1 in read.iter("FB"):
-            fb,_ = convert_xml_basic_fb(library+'/'+read_1.get("Type")+'.fbt', library)  # Blocks declared in FBNetwork must be inside src/models/diac_library
+            fb,_ = convert_xml_basic_fb(library+read_1.get("Type")+'.fbt', library)  # Blocks declared in FBNetwork must be inside src/models/diac_library
             fb.change_pos(float(read_1.get("x"))/4, float(read_1.get("y"))/4)
             fb.name = read_1.get("Name")
             fb.type = read_1.get("Type")
@@ -435,8 +437,11 @@ def convert_xml_system(xml, library):
         for read_1 in read.iter("SubAppNetwork"):
             fb_diagram = Composite()
             for read_2 in read_1.iter("FB"):
-                fb, _ = convert_xml_basic_fb(library+'/'+read_2.get("Type")+'.fbt', library)  # Blocks declared in FBNetwork must be inside src/models/diac_library
-                fb.change_pos(float(read_2.get("x"))/3, float(read_2.get("y"))/3)
+                fb, _ = convert_xml_basic_fb(library+read_2.get("Type")+'.fbt', library)  # Blocks declared in FBNetwork must be inside src/models/diac_library
+                try:
+                    fb.change_pos(float(read_2.get("x"))/3, float(read_2.get("y"))/3)
+                except:
+                    return None
                 fb.name = read_2.get("Name")
                 fb.type = read_2.get("Type")
                 for read_3 in read_2.iter("Parameter"):

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<System Name="FbeTestProject" Comment="">
+ <Identification Standard="Test standard" Classification="Test" ApplicationDomain="GASR" Function="For testing" Type="Test" Description="System created for test purposes only">
+ </Identification>
+ <VersionInfo Organization="GASR-UDESC" Version="1.0" Author="cabral" Date="2024-08-06" Remarks="None">
+ </VersionInfo>
+ <Application Name="MainApp" Comment="">
+  <SubAppNetwork>
+   <FB Name="E_SR" Type="E_SR" Comment="Event-driven bistable" x="104.5751633986928" y="65.35947712418299">
+   </FB>
+   <FB Name="E_PERMIT" Type="E_PERMIT" Comment="permissive propagation of an event" x="69.71677559912852" y="65.35947712418299">
+    <Parameter Name="PERMIT" Value="TRUE"/>
+   </FB>
+   <FB Name="E_CYCLE" Type="E_CYCLE" Comment="Peroidic event generator" x="30.501089324618736" y="61.00217864923747">
+    <Parameter Name="DT" Value="10s"/>
+   </FB>
+   <FB Name="E_CTD" Type="E_CTD" Comment="Event-Driven Down Counter" x="143.7908496732026" y="65.35947712418299">
+    <Parameter Name="PV" Value="1"/>
+   </FB>
+   <EventConnections>
+    <Connection Source="E_CYCLE.EO" Destination="E_PERMIT.EI"/>
+    <Connection Source="E_PERMIT.EO" Destination="E_SR.S"/>
+    <Connection Source="E_SR.EO" Destination="E_CTD.CD"/>
+   </EventConnections>
+   <DataConnections>
+    <Connection Source="E_SR.Q" Destination="E_PERMIT.PERMIT"/>
+   </DataConnections>
+  </SubAppNetwork>
+ </Application>
+ <Application Name="SumApp" Comment="">
+  <SubAppNetwork>
+   <FB Name="F_ADD" Type="F_ADD" Comment="Adds two number values" x="74.07407407407406" y="39.2156862745098">
+    <Parameter Name="IN1" Value="UINT#1"/>
+    <Parameter Name="IN2" Value="UINT#3"/>
+   </FB>
+   <FB Name="F_EQ" Type="F_EQ" Comment="equal" x="113.28976034858387" y="39.2156862745098">
+    <Parameter Name="IN2" Value="UINT#1"/>
+   </FB>
+   <EventConnections>
+    <Connection Source="F_ADD.CNF" Destination="F_EQ.REQ"/>
+   </EventConnections>
+   <DataConnections>
+    <Connection Source="F_ADD.OUT" Destination="F_EQ.IN1"/>
+   </DataConnections>
+  </SubAppNetwork>
+ </Application>
+ <Application Name="MultApp" Comment="">
+  <SubAppNetwork>
+   <FB Name="F_MUL" Type="F_MUL" Comment="Multiplies two values" x="56.644880174291934" y="69.71677559912852">
+    <Parameter Name="IN1" Value="UINT#4"/>
+    <Parameter Name="IN2" Value="UINT#2"/>
+   </FB>
+   <FB Name="F_SUB" Type="F_SUB" Comment="Subtracts two number values" x="95.86056644880172" y="74.07407407407406">
+    <Parameter Name="IN2" Value="UINT#2"/>
+   </FB>
+   <FB Name="F_MAX" Type="F_MAX" Comment="maximum" x="135.07625272331157" y="74.07407407407406">
+    <Parameter Name="IN2" Value="UINT#7"/>
+   </FB>
+   <EventConnections>
+    <Connection Source="F_MUL.CNF" Destination="F_SUB.REQ"/>
+    <Connection Source="F_SUB.CNF" Destination="F_MAX.REQ"/>
+   </EventConnections>
+   <DataConnections>
+    <Connection Source="F_MUL.OUT" Destination="F_SUB.IN1"/>
+    <Connection Source="F_SUB.OUT" Destination="F_MAX.IN1"/>
+   </DataConnections>
+  </SubAppNetwork>
+ </Application>
+ <Device Name="DEV_FORTE" Type="FORTE_PC" Comment="" x="10.838779956427016" y="4.5479302832244">
+  <Resource Name="FST_RES" Type="EMB_RES" Comment="" x="0.0" y="0.0">
+   <FBNetwork>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="100" y="50">
+    </FB>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="133.33333333333334" y="66.66666666666667">
+    </FB>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="144.44444444444446" y="72.22222222222223">
+    </FB>
+    <FB Name="F_ADD" Type="F_ADD" Comment="Adds two number values" x="178.4313725490196" y="67.42919389978213">
+     <Parameter Name="IN1" Value="UINT#1"/>
+     <Parameter Name="IN2" Value="UINT#3"/>
+    </FB>
+    <FB Name="E_CYCLE" Type="E_CYCLE" Comment="Peroidic event generator" x="161.00217864923746" y="93.57298474945534">
+     <Parameter Name="DT" Value="10s"/>
+    </FB>
+    <FB Name="E_CTD" Type="E_CTD" Comment="Event-Driven Down Counter" x="140.52287581699346" y="75.05446623093682">
+    </FB>
+    <EventConnections>
+     <Connection Source="F_MUL.CNF" Destination="F_SUB.REQ"/>
+     <Connection Source="F_SUB.CNF" Destination="F_MAX.REQ"/>
+    </EventConnections>
+    <DataConnections>
+     <Connection Source="F_MUL.OUT" Destination="F_SUB.IN1"/>
+     <Connection Source="F_SUB.OUT" Destination="F_MAX.IN1"/>
+    </DataConnections>
+   </FBNetwork>
+  </Resource>
+  <Resource Name="SECOND_RES" Type="EMB_RES" Comment="" x="0.0" y="0.0">
+   <FBNetwork>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="100" y="50">
+    </FB>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="133.33333333333334" y="66.66666666666667">
+    </FB>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="144.44444444444446" y="72.22222222222223">
+    </FB>
+    <FB Name="E_CTD" Type="E_CTD" Comment="Event-Driven Down Counter" x="165.359477124183" y="76.1437908496732">
+     <Parameter Name="PV" Value="1"/>
+    </FB>
+    <FB Name="F_MUL" Type="F_MUL" Comment="Multiplies two values" x="161.00217864923746" y="76.57952069716775">
+     <Parameter Name="IN1" Value="UINT#4"/>
+     <Parameter Name="IN2" Value="UINT#2"/>
+    </FB>
+    <EventConnections>
+     <Connection Source="F_MUL.CNF" Destination="F_SUB.REQ"/>
+     <Connection Source="F_SUB.CNF" Destination="F_MAX.REQ"/>
+    </EventConnections>
+    <DataConnections>
+     <Connection Source="F_MUL.OUT" Destination="F_SUB.IN1"/>
+     <Connection Source="F_SUB.OUT" Destination="F_MAX.IN1"/>
+    </DataConnections>
+   </FBNetwork>
+  </Resource>
+  <Resource Name="THIRD_RES" Type="EMB_RES" Comment="" x="0.0" y="0.0">
+   <FBNetwork>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="100" y="50">
+    </FB>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="133.33333333333334" y="66.66666666666667">
+    </FB>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="144.44444444444446" y="72.22222222222223">
+    </FB>
+    <EventConnections>
+     <Connection Source="F_MUL.CNF" Destination="F_SUB.REQ"/>
+     <Connection Source="F_SUB.CNF" Destination="F_MAX.REQ"/>
+    </EventConnections>
+    <DataConnections>
+     <Connection Source="F_MUL.OUT" Destination="F_SUB.IN1"/>
+     <Connection Source="F_SUB.OUT" Destination="F_MAX.IN1"/>
+    </DataConnections>
+   </FBNetwork>
+  </Resource>
+ </Device>
+ <Device Name="FORTE" Type="FORTE_PC" Comment="" x="18.600217864923746" y="4.656862745098039">
+  <Resource Name="GASR" Type="EMB_RES" Comment="" x="0.0" y="0.0">
+   <FBNetwork>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="100" y="50">
+    </FB>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="133.33333333333334" y="66.66666666666667">
+    </FB>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="144.44444444444446" y="72.22222222222223">
+    </FB>
+    <FB Name="F_EQ" Type="F_EQ" Comment="equal" x="139.2156862745098" y="67.42919389978213">
+     <Parameter Name="IN2" Value="UINT#1"/>
+    </FB>
+    <FB Name="FINAL" Type="F_MIN" Comment="minimum" x="130.71895424836597" y="72.22222222222223">
+    </FB>
+    <FB Name="F_MAX" Type="F_MAX" Comment="maximum" x="174.07407407407408" y="76.1437908496732">
+     <Parameter Name="IN2" Value="UINT#7"/>
+    </FB>
+    <EventConnections>
+     <Connection Source="F_MUL.CNF" Destination="F_SUB.REQ"/>
+     <Connection Source="F_SUB.CNF" Destination="F_MAX.REQ"/>
+    </EventConnections>
+    <DataConnections>
+     <Connection Source="F_MUL.OUT" Destination="F_SUB.IN1"/>
+     <Connection Source="F_SUB.OUT" Destination="F_MAX.IN1"/>
+    </DataConnections>
+   </FBNetwork>
+  </Resource>
+ </Device>
+ <Mapping From="SumApp.F_ADD" To="DEV_FORTE.FST_RES.F_ADD"/>
+ <Mapping From="MultApp.F_MUL" To="DEV_FORTE.SECOND_RES.F_MUL"/>
+ <Mapping From="MainApp.E_CYCLE" To="DEV_FORTE.FST_RES.E_CYCLE"/>
+ <Mapping From="MultApp.F_MAX" To="FORTE.GASR.F_MAX"/>
+ <Mapping From="SumApp.F_EQ" To="FORTE.GASR.F_EQ"/>
+ <Mapping From="MainApp.E_CTD" To="DEV_FORTE.SECOND_RES.E_CTD"/>
+</System>
