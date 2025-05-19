@@ -246,8 +246,10 @@ class FbeWindow(Adw.ApplicationWindow):
                     toast_overlay = Adw.ToastOverlay.new()
                     toast_overlay.add_toast(toast)
                     self.vbox_window.append(toast_overlay)
-            fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
-            self.add_tab_editor(fb_project, system.name, None)
+            else:
+                fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
+                self.add_tab_editor(fb_project, system.name, None)
+
 
     def on_open_response(self, dialog, result):
         file = dialog.open_finish(result)
