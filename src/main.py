@@ -42,7 +42,7 @@ class FbeApplication(Adw.Application):
         self.set_accels_for_action('win.new-project', ['<Ctrl>n'])
         self.set_accels_for_action('win.open-project', ['<Ctrl>o'])
         self.set_accels_for_action('win.rename-project', ['<Ctrl>r'])
-        self.set_accels_for_action('win.delete-project', ['<Ctrl>d'])
+        self.set_accels_for_action('win.close-project', ['<Ctrl>d'])
         self.set_accels_for_action('win.new-app', ['<Ctrl><Shift>n'])
         self.set_accels_for_action('win.rename-app', ['F2'])
         self.set_accels_for_action('win.delete-app', ['F3'])

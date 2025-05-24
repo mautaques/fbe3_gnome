@@ -220,8 +220,8 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Delete Project</attribute>
-        <attribute name="action">win.delete-project</attribute>
+        <attribute name="label" translatable="yes">_Close Project</attribute>
+        <attribute name="action">win.close-project</attribute>
       </item>
     </section>
     <section>

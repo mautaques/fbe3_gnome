@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<System Name="testing" Comment="">
+    <VersionInfo Version="1.0" Author="cabral" Date="2024-04-25">
+    </VersionInfo>
+    <Application Name="testingApp" Comment="">
+	<SubAppNetwork>
+		<FB Name="E_CTD" Type="E_CTD" Comment="" x="2823.529411764706" y="1764.705882352941">
+		</FB>
+	</SubAppNetwork>
+    </Application>
+</System>

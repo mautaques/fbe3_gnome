@@ -58,8 +58,8 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Delete Project</property>
-                <property name="action-name">win.delete-project</property>
+                <property name="title" translatable="yes" context="shortcut window">Close Project</property>
+                <property name="action-name">win.close-project</property>
               </object>
             </child>
             <child>

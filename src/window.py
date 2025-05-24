@@ -48,8 +48,6 @@ class FbeWindow(Adw.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        # print(cur_path)
-
         # Creation of the "new project" action
         new_file_action = Gio.SimpleAction(name="new-project")
         new_file_action.connect("activate", self.new_file_dialog)
@@ -60,9 +58,9 @@ class FbeWindow(Adw.ApplicationWindow):
         open_action.connect("activate", self.open_file_sys_dialog)
         self.add_action(open_action)
 
-        # Creation of the "delete project" action
-        delete_proj_action = Gio.SimpleAction(name="delete-project")
-        delete_proj_action.connect("activate", self.delete_project)
+        # Creation of the "close project" action
+        delete_proj_action = Gio.SimpleAction(name="close-project")
+        delete_proj_action.connect("activate", self.close_project)
         self.add_action(delete_proj_action)
 
         # Creation of the "add type" action
@@ -86,7 +84,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.selected_tool = None
         self.library = None  # Library path to load nested elements
         self.notebook.connect('create-window', self.on_notebook_create_window)
-        self.notebook.connect('page-removed', self.delete_project)
+        self.notebook.connect('page-removed', self.close_project)
         self.add_fb_btn.connect('clicked', self.add_fb_dialog)
         self.edit_fb_btn.connect('clicked',self.inspect_function_block)
         self.connect_fb_btn.connect('clicked', self.connect_function_block)
@@ -142,7 +140,7 @@ class FbeWindow(Adw.ApplicationWindow):
         return factory
 
     # ------------------ Load Library Methods ---------------------
-    def load_files(self, directory="home/tqs/fbe3_gnome/src/models/fb_library/"):
+    def load_files(self, directory="/home/tqs/fbe3_gnome/src/models/fb_library/"):
         self.library = directory
         directory = Gio.File.new_for_path(directory)
         self.directory_list.set_file(directory)
@@ -223,26 +221,23 @@ class FbeWindow(Adw.ApplicationWindow):
         file_name = file.get_path()
         current_page = self.notebook.get_current_page()
 
-        print(file_name)
-
-        # if file_name == "home/tqs/fbe3_gnome/src/models/fb_library/":
-
             # If the user selected a file...
         if file is not None:
             self.notebook.set_visible(True)
             self.labels_box.set_visible(False)
             window = self.get_ancestor(Gtk.Window)
             system = convert_xml_system(file_name, self.library)
+
             if system is None:
                 if current_page < 0:
                     self.labels_box.set_visible(True)
-                    toast = Adw.Toast.new("Projects must be inside src/models/fb_library")
+                    toast = Adw.Toast.new("Not a .xml")
                     toast_overlay = Adw.ToastOverlay.new()
                     toast_overlay.add_toast(toast)
                     self.vbox_window.append(toast_overlay)
 
                 else:
-                    toast = Adw.Toast.new("Projects must be inside src/models/fb_library")
+                    toast = Adw.Toast.new("Not a .xml")
                     toast_overlay = Adw.ToastOverlay.new()
                     toast_overlay.add_toast(toast)
                     self.vbox_window.append(toast_overlay)
@@ -254,7 +249,9 @@ class FbeWindow(Adw.ApplicationWindow):
     def on_open_response(self, dialog, result):
         file = dialog.open_finish(result)
         file_name = file.get_path()
+        print('endereço do xml aberto .fbt')
         print(file_name)
+
         # If the user selected a file...
         if file is not None:
             # ... open it
@@ -299,16 +296,11 @@ class FbeWindow(Adw.ApplicationWindow):
 
     def on_add_library_fb(self, action, param=None):
         pass
-    '''
-    def get_current_tab_widget(self):
-        _id = self.notebook.get_current_page()
-        return self.notebook.get_nth_page(_id)
-    '''
+
     def on_add_response(self, dialog, result):
         self.selected_tool = 'add'
         file = dialog.open_finish(result)
         file_name = file.get_path()
-        print(file_name)
         toast = Adw.ToastOverlay()
         toast.set_parent(self.vbox_window)
         self.vbox_window.append(toast)
@@ -376,16 +368,58 @@ class FbeWindow(Adw.ApplicationWindow):
 
         return notebook
 
+    # ---------------- Methods to close a project tab ---------------
+
+    def on_close_project_response(self, dialog, response, project_widget):
+        if response == "close":
+            # Close the project tab
+            page_num = self.notebook.page_num(project_widget)
+            self.notebook.remove_page(page_num)
+            current_page = self.notebook.get_current_page()
+            if current_page < 0:
+                self.labels_box.set_visible(True)
+
+    def close_project(self, action, param):
+        # Delete the actual project opened in the tab
+        current_page = self.notebook.get_current_page()
+        if current_page < 0:
+            toast = Adw.ToastOverlay()
+            toast.set_parent(self.vbox_window)
+            self.vbox_window.append(toast)
+            toast.add_toast(Adw.Toast(title="No tabs open", timeout=3))
+        else:
+            # Get the widget of the current tab
+            current_widget = self.notebook.get_nth_page(current_page)
+
+            # Verify if is a project editor
+            if isinstance(current_widget, ProjectEditor):
+                # Create confirmation dialog
+                dialog = Adw.MessageDialog(
+                    transient_for=self,
+                    heading="Close Project",
+                    body="Are you sure you want to close this project?",
+                    close_response="cancel"
+                )
+
+                dialog.add_response("cancel", "Cancel")
+                dialog.add_response("close", "Close")
+                dialog.set_response_appearance("close", Adw.ResponseAppearance.DESTRUCTIVE)
+
+                dialog.connect("response", self.on_close_project_response, current_widget)
+                dialog.present()
+
+    '''
     # ---------------- Methods to delete a project tab ---------------
 
     def on_delete_project_response(self, dialog, response, project_widget):
+        current_page = self.notebook.get_current_page()
         if response == "delete":
             # Close the project tab
             page_num = self.notebook.page_num(project_widget)
             if page_num >= 0:
                 self.notebook.remove_page(page_num)
 
-                if page_num == 0:
+                if current_page < 0:
                     self.labels_box.set_visible(True)
 
             # Show notification
@@ -420,3 +454,4 @@ class FbeWindow(Adw.ApplicationWindow):
 
             dialog.connect("response", self.on_delete_project_response, current_widget)
             dialog.present()
+    '''

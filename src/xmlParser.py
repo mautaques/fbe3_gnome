@@ -5,11 +5,10 @@ import xml.etree.ElementTree as ET
 cur_path = os.path.realpath(__file__)
 base_path = os.path.dirname(os.path.dirname(cur_path))
 sys.path.insert(1, base_path)
-
 from .function_block import *
 
 def convert_xml_basic_fb(xml, library):
-    print(f'XML PATH = {xml}\nLIBRARY PATH = {library}')
+    # print(f'XML PATH = {xml}\nLIBRARY PATH = {library}')
     fb_import_list = set()
     try:
         tree = ET.parse(xml)
@@ -18,8 +17,6 @@ def convert_xml_basic_fb(xml, library):
         return None, None
     root = tree.getroot()
     fb_diagram = None
-
-    print(f'XML PATH = {xml}\nLIBRARY PATH = {library}')
 
     for read in root.iter("FBType"):
         fb_name = read.get("Name")
@@ -385,7 +382,7 @@ def convert_xml_resource(xml, library):
     for read in root.iter("FBNetwork"):
         fb_diagram = Composite()
         for read_1 in read.iter("FB"):
-            fb, _ = convert_xml_basic_fb(library+'/'+read_1.get("Type")+'.fbt', library)  # Blocks declared in FBNetwork must be inside src/models/diac_library
+            fb, _ = convert_xml_basic_fb(library+read_1.get("Type")+'.fbt', library)  # Blocks declared in FBNetwork must be inside src/models/diac_library
             fb.change_pos(float(read_1.get("x"))/3, float(read_1.get("y"))/3)
             if fb.x < 100:
                 fb.x = 100
@@ -401,7 +398,10 @@ def convert_xml_resource(xml, library):
 
 
 def convert_xml_system(xml, library):
-    tree = ET.parse(xml)
+    try:
+        tree = ET.parse(xml)
+    except:
+        return None
     root = tree.getroot()
     fb_import_list = set()
 
@@ -438,10 +438,7 @@ def convert_xml_system(xml, library):
             fb_diagram = Composite()
             for read_2 in read_1.iter("FB"):
                 fb, _ = convert_xml_basic_fb(library+read_2.get("Type")+'.fbt', library)  # Blocks declared in FBNetwork must be inside src/models/diac_library
-                try:
-                    fb.change_pos(float(read_2.get("x"))/3, float(read_2.get("y"))/3)
-                except:
-                    return None
+                fb.change_pos(float(read_2.get("x"))/3, float(read_2.get("y"))/3)
                 fb.name = read_2.get("Name")
                 fb.type = read_2.get("Type")
                 for read_3 in read_2.iter("Parameter"):
@@ -509,7 +506,7 @@ def convert_xml_system(xml, library):
             
             for read_2 in read_1.iter("FBNetwork"):
                 fb_diagram = Composite()
-                resource = convert_xml_resource(library+resource_type+'.res')
+                resource = convert_xml_resource(library+resource_type+'.res', library)
                 resource.name = resource_name
                 resource.change_pos(25, 25)
                 fb_diagram.add_function_block(resource.fb_network.function_blocks[0])
