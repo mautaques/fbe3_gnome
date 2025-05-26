@@ -112,7 +112,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.vbox_expander = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         
         self.library_expander = Gtk.Expander(margin_top=10, margin_start=5, expanded=True)
-        self.library_expander.set_label("Import library")
+        self.library_expander.set_label("Imported library")
         self.library_expander.set_child(self.scrolled_window)
         self.library_expander.set_vexpand(True)
 
@@ -130,8 +130,6 @@ class FbeWindow(Adw.ApplicationWindow):
         self.vbox_separator.append(self.choose_button)      
         self.vbox_separator.append(self.refresh_button)
         self.vbox_expander.append(self.library_expander)
-
-        self.load_files()
 
     def create_list_factory(self):
         factory = Gtk.SignalListItemFactory()
@@ -220,6 +218,8 @@ class FbeWindow(Adw.ApplicationWindow):
         file = dialog.open_finish(result)
         file_name = file.get_path()
         current_page = self.notebook.get_current_page()
+        sys_name = file_name.split("/")[-1]
+        contents = file.load_contents_finish(result)
 
             # If the user selected a file...
         if file is not None:
@@ -231,16 +231,16 @@ class FbeWindow(Adw.ApplicationWindow):
             if system is None:
                 if current_page < 0:
                     self.labels_box.set_visible(True)
-                    toast = Adw.Toast.new("Not a .xml")
+                    toast = Adw.Toast.new(f"Unable to open: {sys_name}")
+                    toast_overlay = Adw.ToastOverlay.new()
+                    toast_overlay.add_toast(toast)
+                    self.vbox_window.append(toast_overlay)
+                else:
+                    toast = Adw.Toast.new(f"Unable to open: {sys_name}")
                     toast_overlay = Adw.ToastOverlay.new()
                     toast_overlay.add_toast(toast)
                     self.vbox_window.append(toast_overlay)
 
-                else:
-                    toast = Adw.Toast.new("Not a .xml")
-                    toast_overlay = Adw.ToastOverlay.new()
-                    toast_overlay.add_toast(toast)
-                    self.vbox_window.append(toast_overlay)
             else:
                 fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
                 self.add_tab_editor(fb_project, system.name, None)
@@ -249,8 +249,6 @@ class FbeWindow(Adw.ApplicationWindow):
     def on_open_response(self, dialog, result):
         file = dialog.open_finish(result)
         file_name = file.get_path()
-        print('endereço do xml aberto .fbt')
-        print(file_name)
 
         # If the user selected a file...
         if file is not None:
@@ -260,6 +258,7 @@ class FbeWindow(Adw.ApplicationWindow):
             fb_diagram.add_function_block(fb_choosen)
             self.add_tab_editor(fb_diagram, fb_choosen.name, fb_choosen)
 
+    # ------------------- nao usados -----------------------
     def on_import_resource_response(self, type_name):
         resource = convert_xml_resource(self.library+type_name+'.res')
         return resource
@@ -348,7 +347,6 @@ class FbeWindow(Adw.ApplicationWindow):
         return new_window.notebook
 
     def set_tab_label_color(self, widget, color = 'label-black'):
-
         label = self.notebook.get_tab_label(widget)
         self.add_default_css_provider(label, color)
 
@@ -365,7 +363,6 @@ class FbeWindow(Adw.ApplicationWindow):
         notebook = self.notebook.insert_page(widget, Gtk.Label.new(title), -1)
         self.notebook.set_current_page(notebook)
         self.notebook.set_tab_detachable(widget, True)
-
         return notebook
 
     # ---------------- Methods to close a project tab ---------------
