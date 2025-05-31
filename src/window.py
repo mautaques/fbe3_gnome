@@ -129,7 +129,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.vbox_separator.append(self.refresh_button)
         self.vbox_expander.append(self.library_expander)
 
-        self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
+        self.library = "/home/taques/fbe3_gnome/src/models/fb_library/"
 
     def create_list_factory(self):
         factory = Gtk.SignalListItemFactory()
@@ -248,7 +248,9 @@ class FbeWindow(Adw.ApplicationWindow):
     def on_open_response(self, dialog, result):
         file = dialog.open_finish(result)
         file_name = file.get_path()
-
+        toast = Adw.ToastOverlay()
+        toast.set_parent(self.vbox_window)
+        self.vbox_window.append(toast)
         # If the user selected a file...
         if file is not None:
             # ... open it
@@ -294,31 +296,7 @@ class FbeWindow(Adw.ApplicationWindow):
 
     # Method to add a function block to the application from the imported library
     def on_add_library_fb(self, action, param=None):
-        filters = Gio.ListStore.new(Gtk.FileFilter)
-        filter_fbt = Gtk.FileFilter()
-        filter_fbt.set_name("fbt Files")
-        filter_fbt.add_pattern("*.fbt")
-        filters.append(filter_fbt)
-        native = Gtk.FileDialog()
-        native.set_filters(filters)
-        native.open(self, None, self.on_add_library_response)
-
-    def on_add_library_response(self, dialog, result):
-        file = dialog.open_finish(result)
-        file_name = file.get_path()
-        toast = Adw.ToastOverlay()
-        toast.set_parent(self.vbox_window)
-        self.vbox_window.append(toast)
-        # If the user selected a file...
-        if file is not None:
-            fb_choosen, _  = convert_xml_basic_fb(file_name, self.library)
-            if isinstance(self.get_current_tab_widget().current_page, FunctionBlockEditor):
-                fb_editor = self.get_current_tab_widget().current_page
-                fb_editor.selected_fb = fb_choosen
-            else:
-                print('not fb editor')
-                toast.add_toast(Adw.Toast(title="Must be inside application editor to add type", timeout=3))
-                self.selected_tool = None
+        pass
 
     # ---------------------- Function Blocks Tools -----------------------
 

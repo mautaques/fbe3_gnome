@@ -49,7 +49,11 @@ class SystemConfigEditor(PageMixin, Gtk.Box):
         self.system_render.add_controller(self.event_controller)
         
         self.system_render.set_draw_func(self.on_draw, None)
-    
+
+        self.sidebox.add_controller(self.criar_scroll_controller())
+
+        self.zoom = 1.0
+
     def build_treeview(self):
         
         #  | -------------- Resource --------------- |
@@ -266,3 +270,24 @@ class SystemConfigEditor(PageMixin, Gtk.Box):
         vadj.set_value(vadj.get_value() + delta_y)
         self.scrolled.set_hadjustment(hadj)
         self.scrolled.set_vadjustment(vadj)
+
+    def criar_scroll_controller(self):
+        scroll = Gtk.EventControllerScroll.new(Gtk.EventControllerScrollFlags.VERTICAL)
+        scroll.connect("scroll", self.ao_scrollar)
+        return scroll
+
+    def ao_scrollar(self, controller, dx, dy):
+        if dy < 0:
+            self.zoom *= 1.1  # Zoom in
+        elif dy > 0:
+            self.zoom /= 1.1  # Zoom out
+
+        # Limita o zoom
+        self.zoom = max(0.1, min(self.zoom, 10))
+
+        # Aplica o zoom (via escala no widget)
+        self.label.set_scale_x(self.zoom)
+        self.label.set_scale_y(self.zoom)
+
+        return True
+
