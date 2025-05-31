@@ -56,8 +56,6 @@ class FbeApplication(Adw.Application):
         self.set_accels_for_action('win.last-page', ['<Ctrl>b'])
         self.set_accels_for_action('win.export-project', ['<Ctrl>e'])
 
-        print(cur_path)
-
     def do_activate(self):
         """
         Called when the application is activated.

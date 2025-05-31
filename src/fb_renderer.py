@@ -8,8 +8,6 @@ cur_path = os.path.realpath(__file__)
 base_path = os.path.dirname(os.path.dirname(cur_path))
 sys.path.insert(1, base_path)
 
-
-
 class FunctionBlockRenderer(Gtk.DrawingArea):
 
     def __init__(self, fb_diagram, inspected_block, *args, **kwargs):

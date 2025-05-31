@@ -92,9 +92,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.remove_fb_btn.connect('clicked', self.remove_function_block)
 
         self.directory_list = Gtk.DirectoryList.new(
-            attributes=Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-            file=Gio.File.new_for_path(".")
-        )
+            attributes=Gio.FILE_ATTRIBUTE_STANDARD_NAME)
 
         self.vbox_separator = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin_top=5)
         
@@ -131,6 +129,8 @@ class FbeWindow(Adw.ApplicationWindow):
         self.vbox_separator.append(self.refresh_button)
         self.vbox_expander.append(self.library_expander)
 
+        self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
+
     def create_list_factory(self):
         factory = Gtk.SignalListItemFactory()
         factory.connect("setup", self.on_factory_setup)
@@ -138,8 +138,7 @@ class FbeWindow(Adw.ApplicationWindow):
         return factory
 
     # ------------------ Load Library Methods ---------------------
-    def load_files(self, directory="/home/tqs/fbe3_gnome/src/models/fb_library/"):
-        self.library = directory
+    def load_files(self, directory):
         directory = Gio.File.new_for_path(directory)
         self.directory_list.set_file(directory)
 
@@ -189,7 +188,7 @@ class FbeWindow(Adw.ApplicationWindow):
         fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
         self.add_tab_editor(fb_project, system.name, None)
 
-    # --------------- Methods to open an existing project ----------------------
+    # --------------- Methods to open an existing project and fb's------------
     def open_file_dialog(self, action, parameter):
         filters = Gio.ListStore.new(Gtk.FileFilter)
         filter_fbt = Gtk.FileFilter()
@@ -221,7 +220,7 @@ class FbeWindow(Adw.ApplicationWindow):
         sys_name = file_name.split("/")[-1]
         contents = file.load_contents_finish(result)
 
-            # If the user selected a file...
+        # If the user selected a file...
         if file is not None:
             self.notebook.set_visible(True)
             self.labels_box.set_visible(False)
@@ -258,30 +257,12 @@ class FbeWindow(Adw.ApplicationWindow):
             fb_diagram.add_function_block(fb_choosen)
             self.add_tab_editor(fb_diagram, fb_choosen.name, fb_choosen)
 
-    # ------------------- nao usados -----------------------
+    # Method to import a resource (not yet implemented)
     def on_import_resource_response(self, type_name):
         resource = convert_xml_resource(self.library+type_name+'.res')
         return resource
 
-    def open_file(self, file):
-        file.load_contents_async(None, self.open_file_complete)
-
-    def open_file_complete(self, file, result):
-        contents = file.load_contents_finish(result)
-        if not contents[0]:
-            path = file.peek_path()
-            print(f"Unable to open {path}: {contents[1]}")
-            return
-
-        try:
-            text = contents[1].decode('utf-8')
-        except UnicodeError as err:
-            path = file.peek_path()
-            print(f"Unable to load the contents of {path}: the file is not encoded with UTF-8")
-            return
-    # ------------------------------------------------------------------------
-
-    # Method to add a function block to the application from the library
+    # Method to add a function block to the application
     def add_fb_dialog(self, action, param=None):
         # Create a new file selection dialog, using the "open" mode
         filters = Gio.ListStore.new(Gtk.FileFilter)
@@ -293,9 +274,6 @@ class FbeWindow(Adw.ApplicationWindow):
         native.set_filters(filters)
         native.open(self, None, self.on_add_response)
 
-    def on_add_library_fb(self, action, param=None):
-        pass
-
     def on_add_response(self, dialog, result):
         self.selected_tool = 'add'
         file = dialog.open_finish(result)
@@ -305,7 +283,35 @@ class FbeWindow(Adw.ApplicationWindow):
         self.vbox_window.append(toast)
         # If the user selected a file...
         if file is not None:
-            fb_choosen,_  = convert_xml_basic_fb(file_name, self.library)
+            fb_choosen, _  = convert_xml_basic_fb(file_name, self.library)
+            if isinstance(self.get_current_tab_widget().current_page, FunctionBlockEditor):
+                fb_editor = self.get_current_tab_widget().current_page
+                fb_editor.selected_fb = fb_choosen
+            else:
+                print('not fb editor')
+                toast.add_toast(Adw.Toast(title="Must be inside application editor to add type", timeout=3))
+                self.selected_tool = None
+
+    # Method to add a function block to the application from the imported library
+    def on_add_library_fb(self, action, param=None):
+        filters = Gio.ListStore.new(Gtk.FileFilter)
+        filter_fbt = Gtk.FileFilter()
+        filter_fbt.set_name("fbt Files")
+        filter_fbt.add_pattern("*.fbt")
+        filters.append(filter_fbt)
+        native = Gtk.FileDialog()
+        native.set_filters(filters)
+        native.open(self, None, self.on_add_library_response)
+
+    def on_add_library_response(self, dialog, result):
+        file = dialog.open_finish(result)
+        file_name = file.get_path()
+        toast = Adw.ToastOverlay()
+        toast.set_parent(self.vbox_window)
+        self.vbox_window.append(toast)
+        # If the user selected a file...
+        if file is not None:
+            fb_choosen, _  = convert_xml_basic_fb(file_name, self.library)
             if isinstance(self.get_current_tab_widget().current_page, FunctionBlockEditor):
                 fb_editor = self.get_current_tab_widget().current_page
                 fb_editor.selected_fb = fb_choosen
