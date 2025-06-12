@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<System Name="testing" Comment="">
+ <Identification Standard="" Classification="" ApplicationDomain="" Function="" Type="" Description="">
+ </Identification>
+ <VersionInfo Organization="None" Version="1.0" Author="cabral" Date="2025-06-11" Remarks="None">
+ </VersionInfo>
+ <Application Name="testingApp" Comment="">
+  <SubAppNetwork>
+   <EventConnections>
+   </EventConnections>
+   <DataConnections>
+   </DataConnections>
+  </SubAppNetwork>
+ </Application>
+</System>

@@ -129,7 +129,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.vbox_separator.append(self.refresh_button)
         self.vbox_expander.append(self.library_expander)
 
-        self.library = "/home/taques/fbe3_gnome/src/models/fb_library/"
+        self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
 
     def create_list_factory(self):
         factory = Gtk.SignalListItemFactory()
