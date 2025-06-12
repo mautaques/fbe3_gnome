@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<System Name="fbe_testing_0" Comment="">
+ <Identification Standard="" Classification="" ApplicationDomain="" Function="" Type="" Description="">
+ </Identification>
+ <VersionInfo Organization="None" Version="1.0" Author="cabral" Date="2025-06-11" Remarks="None">
+ </VersionInfo>
+ <Application Name="fbe_testingApp" Comment="">
+  <SubAppNetwork>
+   <FB Name="E_CTU" Type="E_CTU" Comment="Event driven up counter" x="588.235294117647" y="313.7254901960784">
+   </FB>
+   <FB Name="F_ADD" Type="F_ADD" Comment="Adds two number values" x="980.3921568627451" y="313.7254901960784">
+    <Parameter Name="IN1" Value="INT#2"/>
+    <Parameter Name="IN2" Value="INT#1"/>
+   </FB>
+   <EventConnections>
+    <Connection Source="E_CTU.CUO" Destination="F_ADD.REQ"/>
+   </EventConnections>
+   <DataConnections>
+    <Connection Source="E_CTU.CV" Destination="F_ADD.IN1"/>
+   </DataConnections>
+  </SubAppNetwork>
+ </Application>
+ <Device Name="FORTE_PC" Type="FORTE_PC" Comment="" x="343.1372549019607" y="172.54901960784312">
+  <Resource Name="EMB_RES" Type="EMB_RES" Comment="" x="0.0" y="0.0">
+   <FBNetwork>
+    <FB Name="START" Type="E_RESTART" Comment="Service Interface Function Block Type" x="100" y="50">
+    </FB>
+    <FB Name="F_ADD" Type="F_ADD" Comment="Adds two number values" x="980.3921568627451" y="89.2156862745098">
+     <Parameter Name="IN1" Value="INT#2"/>
+     <Parameter Name="IN2" Value="INT#1"/>
+    </FB>
+    <FB Name="E_CTU" Type="E_CTU" Comment="Event driven up counter" x="588.235294117647" y="89.2156862745098">
+    </FB>
+    <EventConnections>
+     <Connection Source="E_CTU.CUO" Destination="F_ADD.REQ"/>
+    </EventConnections>
+    <DataConnections>
+     <Connection Source="E_CTU.CV" Destination="F_ADD.IN1"/>
+    </DataConnections>
+   </FBNetwork>
+  </Resource>
+ </Device>
+ <Mapping From="fbe_testingApp.F_ADD" To="FORTE_PC.EMB_RES.F_ADD"/>
+ <Mapping From="fbe_testingApp.E_CTU" To="FORTE_PC.EMB_RES.E_CTU"/>
+</System>

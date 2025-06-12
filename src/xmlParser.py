@@ -437,7 +437,8 @@ def convert_xml_system(xml, library):
         for read_1 in read.iter("SubAppNetwork"):
             fb_diagram = Composite()
             for read_2 in read_1.iter("FB"):
-                fb, _ = convert_xml_basic_fb(library+read_2.get("Type")+'.fbt', library)  # Blocks declared in FBNetwork must be inside src/models/diac_library
+                fb, _ = convert_xml_basic_fb(library+read_2.get("Type")+'.fbt', library)
+                # Blocks declared in FBNetwork must be inside src/models/diac_library
                 fb.change_pos(float(read_2.get("x"))/3, float(read_2.get("y"))/3)
                 fb.name = read_2.get("Name")
                 fb.type = read_2.get("Type")
