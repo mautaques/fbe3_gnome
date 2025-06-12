@@ -1007,6 +1007,7 @@ class Device():
         self.resource.comment = new_comment
         
     def save(self, path):
+        file_path_name = path
         if file_path_name is None:
             if self._file_path_name is None:
                 return False

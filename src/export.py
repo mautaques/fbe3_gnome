@@ -164,6 +164,12 @@ class ExportWindow(Gtk.Box, PageMixin):
         listbox.append(row)
         return row
         
+    def on_file_dialog_response(self, dialog, response):
+        if response == Gtk.ResponseType.OK:
+            selected_folder = dialog.get_file().get_path()
+            self.update_selected_path(selected_folder)
+        dialog.destroy()
+
     def on_choose_button_clicked(self, widget):
         dialog = Gtk.FileChooserDialog(
             title="Choose Directory",
@@ -177,12 +183,6 @@ class ExportWindow(Gtk.Box, PageMixin):
         )
         dialog.connect("response", self.on_file_dialog_response)
         dialog.show()
-
-    def on_file_dialog_response(self, dialog, response):
-        if response == Gtk.ResponseType.OK:
-            selected_folder = dialog.get_file().get_path()
-            self.update_selected_path(selected_folder)
-        dialog.destroy()
 
     def update_selected_path(self, new_path):
         self.path_buffer.set_text(new_path, len(new_path))
@@ -204,4 +204,4 @@ class ExportWindow(Gtk.Box, PageMixin):
                 if elem.name == element:
                     elem.save(path)
 
-    
+

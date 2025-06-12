@@ -214,12 +214,6 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Rename Project</attribute>
-        <attribute name="action">win.rename-project</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
         <attribute name="label" translatable="yes">_Close Project</attribute>
         <attribute name="action">win.close-project</attribute>
       </item>
