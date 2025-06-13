@@ -121,7 +121,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.refresh_button.connect("clicked", self.on_refresh_button_clicked)
 
         self.add_library_fb_btn = Gtk.Button(label="Add function block")
-        self.add_library_fb_btn.connect("clicked", self.on_refresh_button_clicked)
+        self.add_library_fb_btn.connect("clicked", self.open_file_dialog)
         
         self.vpaned.set_end_child(self.vbox_separator)
         self.vbox_separator.append(self.vbox_expander)
@@ -129,7 +129,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.vbox_separator.append(self.refresh_button)
         self.vbox_expander.append(self.library_expander)
 
-        self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
+        self.library = "/home/taques/fbe3_gnome/src/models/fb_library/"
 
     def create_list_factory(self):
         factory = Gtk.SignalListItemFactory()
@@ -162,10 +162,11 @@ class FbeWindow(Adw.ApplicationWindow):
             self.load_files(selected_folder)
         dialog.destroy()
 
-    # ------------------ Refresh Library Methods ------------------
+    # Method to refresh the library
     def on_refresh_button_clicked(self, widget):
         self.load_files()
 
+    # -- Methods to setup the Gtk.SignalListItemFactory -
     def on_factory_setup(self, factory, list_item):
         label = Gtk.Label()
         list_item.set_child(label)
@@ -175,8 +176,8 @@ class FbeWindow(Adw.ApplicationWindow):
         label = list_item.get_child()
         if file_info:
             label.set_text(file_info.get_name())
+    # --------------------------------------------------
 
-    # ------------------------------------------------------------
 
     # Method to create a project
     def new_file_dialog(self, action, param=None):
@@ -188,7 +189,7 @@ class FbeWindow(Adw.ApplicationWindow):
         fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
         self.add_tab_editor(fb_project, system.name, None)
 
-    # --------------- Methods to open an existing project and fb's------------
+    # Method to add a function block to the application from the library
     def open_file_dialog(self, action, parameter):
         filters = Gio.ListStore.new(Gtk.FileFilter)
         filter_fbt = Gtk.FileFilter()
@@ -199,6 +200,21 @@ class FbeWindow(Adw.ApplicationWindow):
         native.set_filters(filters)
         native.open(self, None, self.on_open_response)
         
+    def on_open_response(self, dialog, result):
+        file = dialog.open_finish(result)
+        file_name = file.get_path()
+        toast = Adw.ToastOverlay()
+        toast.set_parent(self.vbox_window)
+        self.vbox_window.append(toast)
+        # If the user selected a file...
+        if file is not None:
+            # ... open it
+            fb_choosen, _  = convert_xml_basic_fb(file_name, self.library)
+            fb_diagram = Composite()
+            fb_diagram.add_function_block(fb_choosen)
+            self.add_tab_editor(fb_diagram, fb_choosen.name, fb_choosen)
+
+    # --------------- Methods to open an existing project ------------
     def open_file_sys_dialog(self, action, parameter):
         filters = Gio.ListStore.new(Gtk.FileFilter)
         filter_fbt = Gtk.FileFilter()
@@ -243,21 +259,6 @@ class FbeWindow(Adw.ApplicationWindow):
             else:
                 fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
                 self.add_tab_editor(fb_project, system.name, None)
-
-
-    def on_open_response(self, dialog, result):
-        file = dialog.open_finish(result)
-        file_name = file.get_path()
-        toast = Adw.ToastOverlay()
-        toast.set_parent(self.vbox_window)
-        self.vbox_window.append(toast)
-        # If the user selected a file...
-        if file is not None:
-            # ... open it
-            fb_choosen, _  = convert_xml_basic_fb(file_name, self.library)
-            fb_diagram = Composite()
-            fb_diagram.add_function_block(fb_choosen)
-            self.add_tab_editor(fb_diagram, fb_choosen.name, fb_choosen)
 
     # Method to import a resource (not yet implemented)
     def on_import_resource_response(self, type_name):
