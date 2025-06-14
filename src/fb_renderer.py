@@ -17,6 +17,12 @@ class FunctionBlockRenderer(Gtk.DrawingArea):
         self.selected_connection = None
         self.offset_x, self.offset_y = 0, 0
         
+    def set_zoom_level(self, zoom_level):
+        """Define o nível de zoom para o FunctionBlockRenderer e redesenha."""
+        self.fb_render.set_zoom_level(zoom_level)
+        self.fb_render.queue_draw()
+        self.update_scrolled_window()
+
     def draw_grid(self, cr):
         allocation = self.get_allocation()
         width = allocation.width

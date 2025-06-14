@@ -92,6 +92,12 @@ class FunctionBlockEditor(PageMixin, Gtk.Box):
 
         self.build_treeview()
 
+    def set_zoom_level(self, zoom_level):
+        """Define o nível de zoom para o FunctionBlockRenderer e redesenha."""
+        self.fb_render.set_zoom_level(zoom_level)
+        self.fb_render.queue_draw()
+        self.update_scrolled_window()
+
     def build_treeview(self):
         self.events_liststore = Gtk.ListStore(str, bool, bool, object)
 

@@ -44,6 +44,10 @@ class FbeWindow(Adw.ApplicationWindow):
     move_fb_btn = Gtk.Template.Child()
     remove_fb_btn = Gtk.Template.Child()
     edit_fb_btn = Gtk.Template.Child()
+    header_bar = Gtk.Template.Child()
+    zoom_in_button = Gtk.Template.Child()
+    zoom_out_button = Gtk.Template.Child()
+    zoom_level_label = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -102,6 +106,9 @@ class FbeWindow(Adw.ApplicationWindow):
         # Create a ListView to display the files
         self.list_view = Gtk.ListView.new(model=self.selection_model, factory=self.create_list_factory())
 
+        # Create a GestureClick to add fb from the imported library
+        self.gesture_press = Gtk.GestureClick.new()
+
         self.scrolled_window = Gtk.ScrolledWindow(margin_top=5)
         self.scrolled_window.set_child(self.list_view)
         self.scrolled_window.set_min_content_width(190)
@@ -120,16 +127,36 @@ class FbeWindow(Adw.ApplicationWindow):
         self.refresh_button = Gtk.Button(label="Refresh library")
         self.refresh_button.connect("clicked", self.on_refresh_button_clicked)
 
-        self.add_library_fb_btn = Gtk.Button(label="Add function block")
-        self.add_library_fb_btn.connect("clicked", self.open_file_dialog)
-        
         self.vpaned.set_end_child(self.vbox_separator)
         self.vbox_separator.append(self.vbox_expander)
         self.vbox_separator.append(self.choose_button)      
         self.vbox_separator.append(self.refresh_button)
         self.vbox_expander.append(self.library_expander)
 
-        self.library = "/home/taques/fbe3_gnome/src/models/fb_library/"
+        self.gesture_press.connect("pressed", self.on_add_library_fb)
+        self.list_view.add_controller(self.gesture_press)
+
+        self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
+
+    # --- Zoom methods ---
+    def on_zoom_in_clicked(self, widget):
+        self.current_zoom_level = min(self.current_zoom_level + 0.1, 2.0) # Limite máximo de zoom
+        self.update_zoom_level()
+
+    def on_zoom_out_clicked(self, widget):
+        self.current_zoom_level = max(self.current_zoom_level - 0.1, 0.5) # Limite mínimo de zoom
+        self.update_zoom_level()
+
+    def update_zoom_level(self):
+        self.zoom_level_label.set_text(f"{int(self.current_zoom_level * 100)}%")
+        # Chamar a função de atualização do zoom no editor atual, se for um FunctionBlockEditor
+        current_widget = self.get_current_tab_widget()
+        if current_widget and isinstance(current_widget, ProjectEditor):
+            # O ProjectEditor contém o editor da aplicação (FunctionBlockEditor ou outro)
+            editor_page = current_widget.current_page
+            if isinstance(editor_page, FunctionBlockEditor):
+                editor_page.set_zoom_level(self.current_zoom_level)
+    # --- End zoom methods ---
 
     def create_list_factory(self):
         factory = Gtk.SignalListItemFactory()
@@ -160,13 +187,14 @@ class FbeWindow(Adw.ApplicationWindow):
         if response == Gtk.ResponseType.OK:
             selected_folder = dialog.get_file().get_path()
             self.load_files(selected_folder)
+            self.imported_library = True
         dialog.destroy()
 
     # Method to refresh the library
     def on_refresh_button_clicked(self, widget):
         self.load_files()
 
-    # -- Methods to setup the Gtk.SignalListItemFactory -
+    # --Methods to setup the Gtk.SignalListItemFactory--
     def on_factory_setup(self, factory, list_item):
         label = Gtk.Label()
         list_item.set_child(label)
@@ -175,9 +203,8 @@ class FbeWindow(Adw.ApplicationWindow):
         file_info = list_item.get_item()
         label = list_item.get_child()
         if file_info:
-            label.set_text(file_info.get_name())
+            return label.set_text(file_info.get_name())
     # --------------------------------------------------
-
 
     # Method to create a project
     def new_file_dialog(self, action, param=None):
@@ -188,31 +215,6 @@ class FbeWindow(Adw.ApplicationWindow):
         window = self.get_ancestor(Gtk.Window)
         fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
         self.add_tab_editor(fb_project, system.name, None)
-
-    # Method to add a function block to the application from the library
-    def open_file_dialog(self, action, parameter):
-        filters = Gio.ListStore.new(Gtk.FileFilter)
-        filter_fbt = Gtk.FileFilter()
-        filter_fbt.set_name("fbt Files")
-        filter_fbt.add_pattern("*.fbt")
-        filters.append(filter_fbt)
-        native = Gtk.FileDialog()
-        native.set_filters(filters)
-        native.open(self, None, self.on_open_response)
-        
-    def on_open_response(self, dialog, result):
-        file = dialog.open_finish(result)
-        file_name = file.get_path()
-        toast = Adw.ToastOverlay()
-        toast.set_parent(self.vbox_window)
-        self.vbox_window.append(toast)
-        # If the user selected a file...
-        if file is not None:
-            # ... open it
-            fb_choosen, _  = convert_xml_basic_fb(file_name, self.library)
-            fb_diagram = Composite()
-            fb_diagram.add_function_block(fb_choosen)
-            self.add_tab_editor(fb_diagram, fb_choosen.name, fb_choosen)
 
     # --------------- Methods to open an existing project ------------
     def open_file_sys_dialog(self, action, parameter):
@@ -296,8 +298,43 @@ class FbeWindow(Adw.ApplicationWindow):
                 self.selected_tool = None
 
     # Method to add a function block to the application from the imported library
-    def on_add_library_fb(self, action, param=None):
-        pass
+    def on_add_library_fb(self, gesture, n_press, x, y):
+        self.selected_tool = 'add'
+        toast_overlay = Adw.ToastOverlay.new()
+        toast_overlay.set_parent(self.vbox_window)
+        self.vbox_window.append(toast_overlay)
+
+        selected_item_index = self.selection_model.get_selected()
+        if selected_item_index == Gtk.INVALID_LIST_POSITION:
+            toast = Adw.Toast(title="No selected item.", timeout=3)
+            toast_overlay.add_toast(toast)
+            return
+
+        file_info = self.selection_model.get_item(selected_item_index)
+        if not file_info:
+            toast = Adw.Toast(title="Cannot open the file.", timeout=3)
+            toast_overlay.add_toast(toast)
+            return
+
+        file_name_short = file_info.get_name()
+
+        if not self.library:
+            toast = Adw.Toast(title="No library path defined.", timeout=3)
+            toast_overlay.add_toast(toast)
+            return
+
+        full_file_path = os.path.join(self.library, file_name_short)
+
+        fb_choosen, _  = convert_xml_basic_fb(full_file_path, self.library)
+        if isinstance(self.get_current_tab_widget().current_page, FunctionBlockEditor):
+            fb_editor = self.get_current_tab_widget().current_page
+            fb_editor.selected_fb = fb_choosen
+        else:
+            print('not fb editor')
+            toast = Adw.Toast(title="Must be inside application editor to add type", timeout=3)
+            toast_overlay.add_toast(toast)
+            self.selected_tool = None
+
 
     # ---------------------- Function Blocks Tools -----------------------
 
