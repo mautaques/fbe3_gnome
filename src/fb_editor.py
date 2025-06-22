@@ -413,6 +413,12 @@ class FunctionBlockEditor(PageMixin, Gtk.Box):
                 self.update_scrolled_window()
 
     def button_press(self, e, data, x, y):
+        '''
+        Erro
+        '''
+        # print("000000")
+        # print(x,y)
+        print(self.selected_fb)
         window = self.get_ancestor_window()
         tool = window.get_selected_tool()
         if tool != 'add':

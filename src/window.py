@@ -103,6 +103,9 @@ class FbeWindow(Adw.ApplicationWindow):
         # Create a GtkSingleSelection model
         self.selection_model = Gtk.SingleSelection.new(self.directory_list)
 
+        if self.selection_model.get_autoselect():
+            self.selection_model.set_autoselect(False)
+
         # Create a ListView to display the files
         self.list_view = Gtk.ListView.new(model=self.selection_model, factory=self.create_list_factory())
 
@@ -304,19 +307,29 @@ class FbeWindow(Adw.ApplicationWindow):
         toast_overlay.set_parent(self.vbox_window)
         self.vbox_window.append(toast_overlay)
 
+
         selected_item_index = self.selection_model.get_selected()
+        print('SELECTED_ITEM_INDEX')
+        print(selected_item_index)
+        print('\n')
         if selected_item_index == Gtk.INVALID_LIST_POSITION:
             toast = Adw.Toast(title="No selected item.", timeout=3)
             toast_overlay.add_toast(toast)
             return
 
-        file_info = self.selection_model.get_item(selected_item_index)
+        file_info = self.selection_model.get_selected_item()
+        print('FILE_INFO')
+        print(file_info)
+        print('\n')
         if not file_info:
             toast = Adw.Toast(title="Cannot open the file.", timeout=3)
             toast_overlay.add_toast(toast)
             return
 
         file_name_short = file_info.get_name()
+        print('FILE_NAME_SHORT')
+        print(file_name_short)
+        print('\n')
 
         if not self.library:
             toast = Adw.Toast(title="No library path defined.", timeout=3)
@@ -324,6 +337,9 @@ class FbeWindow(Adw.ApplicationWindow):
             return
 
         full_file_path = os.path.join(self.library, file_name_short)
+        print('FULL_FILE_PATH')
+        print(full_file_path)
+        print('\n')
 
         fb_choosen, _  = convert_xml_basic_fb(full_file_path, self.library)
         if isinstance(self.get_current_tab_widget().current_page, FunctionBlockEditor):
