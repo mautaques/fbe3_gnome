@@ -71,8 +71,8 @@ class FbeWindow(Adw.ApplicationWindow):
         add_type_action = Gio.SimpleAction(name="add-type")
         add_type_action.connect("activate", self.add_fb_dialog)
         self.add_action(add_type_action)
-        
-        # ---------- Make tool frame's border square ---------- #  
+
+        # ---------- Make tool frame's border square ---------- #
         css_provider = Gtk.CssProvider()
         css_provider.load_from_data(b".squared {border-radius: 0;}")
         Gtk.StyleContext.add_provider_for_display(
@@ -94,6 +94,8 @@ class FbeWindow(Adw.ApplicationWindow):
         self.connect_fb_btn.connect('clicked', self.connect_function_block)
         self.move_fb_btn.connect('clicked', self.move_function_block)
         self.remove_fb_btn.connect('clicked', self.remove_function_block)
+        self.zoom_in_button.connect('clicked', self.on_zoom_in_clicked)
+        self.zoom_out_button.connect('clicked', self.on_zoom_out_clicked)
 
         self.directory_list = Gtk.DirectoryList.new(
             attributes=Gio.FILE_ATTRIBUTE_STANDARD_NAME)
@@ -141,17 +143,19 @@ class FbeWindow(Adw.ApplicationWindow):
 
         self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
 
+        self.current_zoom_level = 10
+
     # --- Zoom methods ---
     def on_zoom_in_clicked(self, widget):
-        self.current_zoom_level = min(self.current_zoom_level + 0.1, 2.0) # Limite máximo de zoom
+        self.current_zoom_level = min(self.current_zoom_level + 0.5, 20) # Limite máximo de zoom
         self.update_zoom_level()
 
     def on_zoom_out_clicked(self, widget):
-        self.current_zoom_level = max(self.current_zoom_level - 0.1, 0.5) # Limite mínimo de zoom
+        self.current_zoom_level = max(self.current_zoom_level - 0.5, 1) # Limite mínimo de zoom
         self.update_zoom_level()
 
     def update_zoom_level(self):
-        self.zoom_level_label.set_text(f"{int(self.current_zoom_level * 100)}%")
+        self.zoom_level_label.set_text(f"{int(self.current_zoom_level * 10)}%")
         # Chamar a função de atualização do zoom no editor atual, se for um FunctionBlockEditor
         current_widget = self.get_current_tab_widget()
         if current_widget and isinstance(current_widget, ProjectEditor):
