@@ -266,6 +266,12 @@ class Transition():
         return condition_str
         
     def convert_condition_xml(self):
+        print("CONDICAO COMECA AQUI")
+        print(self.condition[0])
+        print(self.condition[1])
+        print(self.condition[2])
+        print(self.condition[3])
+        print("CONDICAO TERMINA AQUI")
         if self.condition == '':
             return self.condition
         condition_str=''
@@ -945,10 +951,73 @@ class Resource():
     
     def change_pos(self, pos_x, pos_y):
         self.x, self.y = pos_x, pos_y   
-        
-    def save(self, path):
-        print('not implemented')
+
+    # ---------------------------- FILE --------------------------- #
     
+    def get_file_name(self):
+        if self._file_path_name is not None:
+            return os.path.basename(self._file_path_name)
+        return None
+
+    def get_file_path_name(self):
+        return self._file_path_name
+
+    def get_name(self):
+        if self._file_path_name is not None:
+            return self.get_file_name()
+        elif self.name is not None:
+            return self.name
+        return 'Untitled'
+
+    def set_file_path_name(self, file_path_name):
+        self._file_path_name = file_path_name
+        self._name = self.get_name()
+
+    def clear_file_path_name(self):
+        self._file_path_name = None
+
+    def set_name(self, name):
+        if self._file_path_name is None:
+            self._name = name
+
+    # ------------------------------------------------------------- #
+
+    def save(self, file_path_name=None):
+        if file_path_name is None:
+            if self._file_path_name is None:
+                return False
+            file_path_name = self._file_path_name
+        else:
+            file_path_name += '/'+self.name+".res"
+            self.set_file_path_name(file_path_name)
+
+        f = open(file_path_name, 'w')
+        f.write('<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n')
+        f.write('<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd">\n')
+        f.write(f'<ResourceType Comment="{self.comment}" Name="{self.name}">\n')
+        f.write(f' <Identification Description="{self.identification.description}">\n')
+        f.write(f' <VersionInfo Author="{self.version_info.author}" Date="{datetime.date.today()}" Organization="{self.version_info.organization}" Version="{self.version_info.version}">\n')
+        f.write('   <FBNetwork>\n')
+        for fb in self.fb_network.function_blocks:
+            f.write(f'   <FB Name="{fb.name}" Type="{fb.type}" Comment="{fb.comment}" x="{fb.x}" y="{fb.y}">\n')
+            for var in fb.variables:
+                if var.value is not None:
+                    f.write(f'    <Parameter Name="{var.name}" Value="{var.value}"/>\n')
+            f.write(f'   </FB>\n')
+            f.write(f'   <EventConnections>\n')
+            for connection in self.fb_network.event_connections:
+                f.write(f'    <Connection Source="{connection[0][0].name}.{connection[0][1].name}" Destination="{connection[1][0].name}.{connection[1][1].name}"/>\n')
+            f.write(f'   </EventConnections>\n')
+            f.write(f'   <DataConnections>\n')
+            for connection in self.fb_network.variable_connections:
+                f.write(f'    <Connection Source="{connection[0][0].name}.{connection[0][1].name}" Destination="{connection[1][0].name}.{connection[1][1].name}"/>\n')
+            f.write(f'   </DataConnections>\n')
+        f.write('   </FBNetwork>\n')
+        f.write('</ResourceType>')
+
+        return True
+
+
 class Device():
     def __init__(self, name, type, comment='', x=0.0, y=0.0):
         self.name = name

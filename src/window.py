@@ -45,9 +45,6 @@ class FbeWindow(Adw.ApplicationWindow):
     remove_fb_btn = Gtk.Template.Child()
     edit_fb_btn = Gtk.Template.Child()
     header_bar = Gtk.Template.Child()
-    zoom_in_button = Gtk.Template.Child()
-    zoom_out_button = Gtk.Template.Child()
-    zoom_level_label = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -94,8 +91,6 @@ class FbeWindow(Adw.ApplicationWindow):
         self.connect_fb_btn.connect('clicked', self.connect_function_block)
         self.move_fb_btn.connect('clicked', self.move_function_block)
         self.remove_fb_btn.connect('clicked', self.remove_function_block)
-        self.zoom_in_button.connect('clicked', self.on_zoom_in_clicked)
-        self.zoom_out_button.connect('clicked', self.on_zoom_out_clicked)
 
         self.directory_list = Gtk.DirectoryList.new(
             attributes=Gio.FILE_ATTRIBUTE_STANDARD_NAME)
@@ -142,28 +137,6 @@ class FbeWindow(Adw.ApplicationWindow):
         self.list_view.add_controller(self.gesture_press)
 
         self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
-
-        self.current_zoom_level = 10
-
-    # --- Zoom methods ---
-    def on_zoom_in_clicked(self, widget):
-        self.current_zoom_level = min(self.current_zoom_level + 0.5, 20) # Limite máximo de zoom
-        self.update_zoom_level()
-
-    def on_zoom_out_clicked(self, widget):
-        self.current_zoom_level = max(self.current_zoom_level - 0.5, 1) # Limite mínimo de zoom
-        self.update_zoom_level()
-
-    def update_zoom_level(self):
-        self.zoom_level_label.set_text(f"{int(self.current_zoom_level * 10)}%")
-        # Chamar a função de atualização do zoom no editor atual, se for um FunctionBlockEditor
-        current_widget = self.get_current_tab_widget()
-        if current_widget and isinstance(current_widget, ProjectEditor):
-            # O ProjectEditor contém o editor da aplicação (FunctionBlockEditor ou outro)
-            editor_page = current_widget.current_page
-            if isinstance(editor_page, FunctionBlockEditor):
-                editor_page.set_zoom_level(self.current_zoom_level)
-    # --- End zoom methods ---
 
     def create_list_factory(self):
         factory = Gtk.SignalListItemFactory()

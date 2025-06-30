@@ -29,27 +29,6 @@
                 <property name="menu-model">secondary_menu</property>
               </object>
             </child>
-            <child type="end">
-              <object class="GtkBox" id="zoom_box">
-                <property name="orientation">horizontal</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkButton" id="zoom_out_button">
-                    <property name="label">-</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="zoom_level_label">
-                    <property name="label">100%</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkButton" id="zoom_in_button">
-                    <property name="label">+</property>
-                  </object>
-                </child>
-              </object>
-            </child>
           </object>
         </child>
 
