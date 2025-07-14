@@ -308,10 +308,14 @@ class SystemEditor(PageMixin, Gtk.Box):
                 dev = target.get_child()
                 if isinstance(dev, Gtk.Expander):
                     device = self.system.device_get(dev.get_label())
-                    print(device.name)
+                    self.project.on_application_editor(None, dev=device)
+
+                    #print(device.name)
                 elif isinstance(dev, Gtk.Label):
                     device = self.system.device_get(dev.get_label())
-                    print(device.name)
+                    self.project.on_application_editor(None, dev=device)
+
+                    #print(device.name)
     
     def on_gesture_click_resource(self, gesture, n_press, x, y):
         self.sys_config_listbox.unselect_all()

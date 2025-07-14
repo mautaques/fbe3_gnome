@@ -164,12 +164,20 @@ class ProjectEditor(PageMixin, Gtk.Box):
         self.current_page_label.set_label(app_editor.app.name)
         self.current_page = app_editor
         self.vpaned.set_end_child(self.current_page)
-    
+
     def application_editor_get(self, app):
         for editor in self.applications_editors:
             if editor.app.name == app.name:
                 return editor
         return None
+
+    def on_device_editor(self, action, param=None, dev=None):
+        if isintance(dev, tuple):
+            dev_editor = self.
+
+    def device_editor_get(self, dev):
+        for dev in self.
+
 
     def goto_last_page(self, action, param=None):
         if self.last_page is not None:

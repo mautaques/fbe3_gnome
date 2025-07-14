@@ -92,14 +92,6 @@ class FunctionBlockEditor(PageMixin, Gtk.Box):
 
         self.build_treeview()
 
-    def set_zoom_level(self, zoom_level):
-        #self.fb_render.resize(zoom_level, zoom_level)
-        #self.fb_render.draw(area, cr, zoom_level, zoom_level, data)
-        self.fb_render.resize_by_zoom(zoom_level)
-        self.trigger_change()
-        self.fb_render.queue_draw()
-        #self.update_scrolled_window()
-
     def build_treeview(self):
         self.events_liststore = Gtk.ListStore(str, bool, bool, object)
 
