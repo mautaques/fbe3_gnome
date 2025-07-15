@@ -169,7 +169,7 @@ class SystemConfigEditor(PageMixin, Gtk.Box):
         if self.selected_device is None:
             self.last_selected_device.resource_change_type(resource, new_type, new_resource)            
         else:
-            self.selected_device.resource_change_type(resource, new_typem, new_resource)
+            self.selected_device.resource_change_type(resource, new_type, new_resource)
         self.update_treeview()
         self.trigger_change()
         
@@ -249,17 +249,6 @@ class SystemConfigEditor(PageMixin, Gtk.Box):
         self._changes_to_save = True
         self.system_render.queue_draw()
 
-    def update_scrolled_window(self):
-        hadj = self.scrolled.get_hadjustment()
-        vadj = self.scrolled.get_vadjustment()
-
-        delta_x, delta_y = self.system_render.renderer_set_size_request(self.scrolled.get_allocation())
-
-        hadj.set_value(hadj.get_value() + delta_x)
-        vadj.set_value(vadj.get_value() + delta_y)
-        self.scrolled.set_hadjustment(hadj)
-        self.scrolled.set_vadjustment(vadj)
-    
     def update_scrolled_window(self):
         hadj = self.scrolled.get_hadjustment()
         vadj = self.scrolled.get_vadjustment()

@@ -308,12 +308,14 @@ class SystemEditor(PageMixin, Gtk.Box):
                 dev = target.get_child()
                 if isinstance(dev, Gtk.Expander):
                     device = self.system.device_get(dev.get_label())
-                    self.project.on_application_editor(None, dev=device)
+                    dev_proj = self.project
+                    self.project.on_device_editor(dev_proj)
 
                     #print(device.name)
                 elif isinstance(dev, Gtk.Label):
                     device = self.system.device_get(dev.get_label())
-                    self.project.on_application_editor(None, dev=device)
+                    dev_proj = self.project
+                    self.project.on_device_editor(dev_proj)
 
                     #print(device.name)
     
