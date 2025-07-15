@@ -326,6 +326,7 @@ class SystemEditor(PageMixin, Gtk.Box):
                     target = target.get_parent()
                 dev = self.system.device_get(target.get_label())
                 resource = dev.resource_get(res.get_label())
+                self.project.on_resource_editor(resource)
                 print(resource.name)
     
     def on_new_app(self, action, param=None):

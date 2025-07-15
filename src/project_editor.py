@@ -177,6 +177,9 @@ class ProjectEditor(PageMixin, Gtk.Box):
         self.current_page = dev_editor
         self.vpaned.set_end_child(self.current_page)
 
+    def on_resource_editor(self, project):
+
+
     def goto_last_page(self, action, param=None):
         if self.last_page is not None:
             current_page_label = self.current_page_label.get_label()
