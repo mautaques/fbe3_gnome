@@ -170,23 +170,12 @@ class ProjectEditor(PageMixin, Gtk.Box):
             if editor.app.name == app.name:
                 return editor
         return None
-<<<<<<< HEAD
-    '''
-    def on_device_editor(self, action, param=None, dev=None):
-        if isintance(dev, tuple):
-            dev_editor = self.
-
-    def device_editor_get(self, dev):
-        for dev in self.
-    '''
-=======
 
     def on_device_editor(self, project):
         dev_editor = SystemConfigEditor(system = self.system, project = project)
         self.last_page = self.current_page
         self.current_page = dev_editor
         self.vpaned.set_end_child(self.current_page)
->>>>>>> 5193eb4 (Device redirection method completed)
 
     def goto_last_page(self, action, param=None):
         if self.last_page is not None:
