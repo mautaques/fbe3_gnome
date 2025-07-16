@@ -308,13 +308,13 @@ class SystemEditor(PageMixin, Gtk.Box):
                 dev = target.get_child()
                 if isinstance(dev, Gtk.Expander):
                     device = self.system.device_get(dev.get_label())
-                    dev_proj = self.project
-                    self.project.on_device_editor(dev_proj)
+                    project = self.project
+                    self.project.on_device_editor(project)
 
                 elif isinstance(dev, Gtk.Label):
                     device = self.system.device_get(dev.get_label())
-                    dev_proj = self.project
-                    self.project.on_device_editor(dev_proj)
+                    project = self.project
+                    self.project.on_device_editor(project)
     
     def on_gesture_click_resource(self, gesture, n_press, x, y):
         self.sys_config_listbox.unselect_all()
@@ -326,8 +326,8 @@ class SystemEditor(PageMixin, Gtk.Box):
                     target = target.get_parent()
                 dev = self.system.device_get(target.get_label())
                 resource = dev.resource_get(res.get_label())
-                self.project.on_resource_editor(resource)
-                print(resource.name)
+                project = self.project
+                self.project.on_resource_editor(resource, project)
     
     def on_new_app(self, action, param=None):
         toast = Adw.ToastOverlay()

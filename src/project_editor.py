@@ -7,6 +7,7 @@ from .system_editor import SystemEditor
 from .system_config_editor import SystemConfigEditor
 from .fb_editor import FunctionBlockEditor
 from .export import ExportWindow
+from .fb_editor import FunctionBlockEditor
 
 @Gtk.Template(resource_path='/com/lapas/Fbe/menu.ui')
 class ProjectEditor(PageMixin, Gtk.Box):
@@ -18,11 +19,12 @@ class ProjectEditor(PageMixin, Gtk.Box):
     apps_submenu = Gtk.Template.Child()
     popover_menubar = Gtk.Template.Child()
     
-    def __init__(self, window, system=None, current_page=None, current_tool=None, system_editor=None, *args, **kwargs):
+    def __init__(self, window, system=None, current_page=None, current_tool=None, library=None, system_editor=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         self.window = window
         self.system = system
+        self.library = library
         self.editor_index = 0
         self.current_page = current_page 
         self.current_page_label = Gtk.Label()
@@ -30,7 +32,7 @@ class ProjectEditor(PageMixin, Gtk.Box):
         self.last_page_label = None
         self.current_tool = current_tool
         self.system_editor = SystemEditor(self.window, self, self.system)
-        self.system_configuration_editor = SystemConfigEditor(self.system, self)
+        self.system_configuration_editor = SystemConfigEditor(self.system, self, self.library)
         self.applications_editors = list()
         
         if current_page is None:
@@ -172,13 +174,16 @@ class ProjectEditor(PageMixin, Gtk.Box):
         return None
 
     def on_device_editor(self, project):
-        dev_editor = SystemConfigEditor(system = self.system, project = project)
+        dev_editor = SystemConfigEditor(system = self.system, project = project, library=self.library)
         self.last_page = self.current_page
         self.current_page = dev_editor
         self.vpaned.set_end_child(self.current_page)
 
-    def on_resource_editor(self, project):
-
+    def on_resource_editor(self, resource, project):
+        resource_editor = FunctionBlockEditor(fb_diagram=resource.fb_network, project=project)
+        self.last_page = self.current_page
+        self.current_page = resource_editor
+        self.vpaned.set_end_child(self.current_page)
 
     def goto_last_page(self, action, param=None):
         if self.last_page is not None:

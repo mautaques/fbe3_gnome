@@ -8,7 +8,6 @@ sys.path.insert(1, base_path)
 from .function_block import *
 
 def convert_xml_basic_fb(xml, library):
-    # print(f'XML PATH = {xml}\nLIBRARY PATH = {library}')
     fb_import_list = set()
     try:
         tree = ET.parse(xml)

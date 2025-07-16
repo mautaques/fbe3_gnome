@@ -8,11 +8,12 @@ from .fb_editor import FunctionBlockEditor
 from .xmlParser import *
 
 class SystemConfigEditor(PageMixin, Gtk.Box):
-    def __init__(self, system, project, current_tool=None, *args, **kwargs):
+    def __init__(self, system, project, library, current_tool=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         self.system = system
         self.project = project
+        self.library = library
         self.enable_add = True
         self.current_tool = current_tool
         self.selected_device = None
@@ -165,7 +166,7 @@ class SystemConfigEditor(PageMixin, Gtk.Box):
         
     def type_text_edited(self, widget, path, new_type):
         resource = self.resources_liststore[path][3]
-        new_resource = convert_xml_resource('tqs/fbe3_gnome/src/models/fb_library/'+new_type+'.res')
+        new_resource = convert_xml_resource(self.library+new_type+'.res', self.library)
         if self.selected_device is None:
             self.last_selected_device.resource_change_type(resource, new_type, new_resource)            
         else:

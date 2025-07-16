@@ -138,7 +138,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.gesture_press.connect("pressed", self.on_add_library_fb)
         self.list_view.add_controller(self.gesture_press)
 
-        self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
+        self.library = "/home/taques/fbe3_gnome/src/models/fb_library/"
 
     def create_list_factory(self):
         factory = Gtk.SignalListItemFactory()
@@ -195,7 +195,7 @@ class FbeWindow(Adw.ApplicationWindow):
         system = System(name='Untitled')
         system.application_create()
         window = self.get_ancestor(Gtk.Window)
-        fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
+        fb_project = ProjectEditor(window, system, current_tool=self.selected_tool, library=self.library)
         self.add_tab_editor(fb_project, system.name, None)
 
     # --------------- Methods to open an existing project ------------
@@ -241,7 +241,7 @@ class FbeWindow(Adw.ApplicationWindow):
                     self.vbox_window.append(toast_overlay)
 
             else:
-                fb_project = ProjectEditor(window, system, current_tool=self.selected_tool)
+                fb_project = ProjectEditor(window, system, current_tool=self.selected_tool, library=self.library)
                 self.add_tab_editor(fb_project, system.name, None)
 
     # Method to import a resource (not yet implemented)
