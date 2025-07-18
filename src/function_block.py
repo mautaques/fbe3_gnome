@@ -1146,7 +1146,7 @@ class Application():
 
         f = open(file_path_name, 'w')
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        f.write(f' <Application Name="{app.name}" Comment="{app.comment}">\n')
+        f.write(f' <Application Name="{self.name}" Comment="{self.comment}">\n')
         f.write(f'  <SubAppNetwork>\n')
         for fb in self.subapp_network.function_blocks:
             f.write(f'   <FB Name="{fb.name}" Type="{fb.type}" Comment="{fb.comment}" x="{fb.x}" y="{fb.y}">\n')
