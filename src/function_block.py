@@ -266,12 +266,6 @@ class Transition():
         return condition_str
         
     def convert_condition_xml(self):
-        print("CONDICAO COMECA AQUI")
-        print(self.condition[0])
-        print(self.condition[1])
-        print(self.condition[2])
-        print(self.condition[3])
-        print("CONDICAO TERMINA AQUI")
         if self.condition == '':
             return self.condition
         condition_str=''
@@ -280,9 +274,9 @@ class Transition():
         elif self.condition[0] != None and self.condition[1] == None:
             condition_str = self.condition[0].name
         elif self.condition[0] == None and self.condition[3] != None:
-            condition_str = '['+self.condition[1].name + ' ' + self.condition[2] + ' ' + self.condition[3] +']'
+            condition_str = '['+self.condition[1].name + ' ' + self.condition[2].name + ' ' + self.condition[3].name +']'
         else:
-            condition_str = self.condition[0].name+'['+self.condition[1].name + ' ' + self.condition[2] + ' ' + self.condition[3] +']'
+            condition_str = self.condition[0].name+'['+self.condition[1].name + ' ' + self.condition[2].name + ' ' + self.condition[3].name +']'
             
         return condition_str    
 
@@ -710,6 +704,7 @@ class FunctionBlock():
     # ------------------------------------------------------------- #         
         
     def save(self, file_path_name=None):
+
         if file_path_name is None:
             if self._file_path_name is None:
                 return False
@@ -765,8 +760,8 @@ class FunctionBlock():
                         f.write(f'     <Parameter Name="{var.name}" Value="{var.value}"/>\n')
                 f.write(f'    </FB>\n')
             f.write(f'    <EventConnections>\n')
-            for connection in self.fb_network.event_connections:
-                f.write(f'     <Connection Source="{connection[0][0].name}.{connection[0][1].name}" Destination="{connection[1][0].name}.{connection[1][1].name}"/>\n')
+            #for connection in self.fb_network.event_connections:
+            #    f.write(f'     <Connection Source="{connection[0][0].name}.{connection[0][1].name}" Destination="{connection[1][0].name}.{connection[1][1].name}"/>\n')
             f.write(f'    </EventConnections>\n')
             f.write(f'    <DataConnections>\n')
             for connection in self.fb_network.variable_connections:
@@ -1074,6 +1069,36 @@ class Device():
     def resource_change_comment(self, resource, new_comment):
         self.resource.comment = new_comment
         
+    # ---------------------------- FILE --------------------------- #
+
+    def get_file_name(self):
+        if self._file_path_name is not None:
+            return os.path.basename(self._file_path_name)
+        return None
+
+    def get_file_path_name(self):
+        return self._file_path_name
+
+    def get_name(self):
+        if self._file_path_name is not None:
+            return self.get_file_name()
+        elif self.name is not None:
+            return self.name
+        return 'Untitled'
+
+    def set_file_path_name(self, file_path_name):
+        self._file_path_name = file_path_name
+        self._name = self.get_name()
+
+    def clear_file_path_name(self):
+        self._file_path_name = None
+
+    def set_name(self, name):
+        if self._file_path_name is None:
+            self._name = name
+
+    # ------------------------------------------------------------- #
+
     def save(self, path):
         file_path_name = path
         if file_path_name is None:

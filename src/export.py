@@ -152,9 +152,6 @@ class ExportWindow(Gtk.Box, PageMixin):
                 self.elements.append(dev)
                 self.add_row(self.app_listbox, dev.name)
 
-    def build_fb_list(self):
-        pass
-                    
     def on_row_selected(self, listbox, row):
         if row is not None:
             self.current_selected_row = row.get_child().get_label()
