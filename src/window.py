@@ -137,7 +137,7 @@ class FbeWindow(Adw.ApplicationWindow):
         self.gesture_press.connect("pressed", self.on_add_library_fb)
         self.list_view.add_controller(self.gesture_press)
 
-        self.library = "/home/taques/fbe3_gnome/src/models/fb_library/"
+        self.library = "/home/tqs/fbe3_gnome/src/models/fb_library/"
         self.actual_folder = None
 
     def create_list_factory(self):
