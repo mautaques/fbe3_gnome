@@ -32,13 +32,7 @@
                     "type" : "git",
                     "url" : "file:///home/taques"
                 }
-            ],
-            "config-opts" : [
-                "--libdir=lib"
             ]
         }
-    ],
-    "build-options" : {
-        "env" : {        }
-    }
+    ]
 }

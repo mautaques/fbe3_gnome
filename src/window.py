@@ -44,7 +44,6 @@ class FbeWindow(Adw.ApplicationWindow):
     move_fb_btn = Gtk.Template.Child()
     remove_fb_btn = Gtk.Template.Child()
     edit_fb_btn = Gtk.Template.Child()
-    header_bar = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
