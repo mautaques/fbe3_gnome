@@ -61,9 +61,9 @@ class FbeWindow(Adw.ApplicationWindow):
         self.add_action(open_action)
 
         # Creation of the "close project" action
-        delete_proj_action = Gio.SimpleAction(name="close-project")
-        delete_proj_action.connect("activate", self.close_project)
-        self.add_action(delete_proj_action)
+        close_proj_action = Gio.SimpleAction(name="close-project")
+        close_proj_action.connect("activate", self.close_project)
+        self.add_action(close_proj_action)
 
         # Creation of the "add type" action
         add_type_action = Gio.SimpleAction(name="add-type")
@@ -94,7 +94,8 @@ class FbeWindow(Adw.ApplicationWindow):
         self.remove_fb_btn.connect('clicked', self.remove_function_block)
 
         self.directory_list = Gtk.DirectoryList.new(
-            attributes=Gio.FILE_ATTRIBUTE_STANDARD_NAME)
+            attributes=Gio.FILE_ATTRIBUTE_STANDARD_NAME
+        )
 
         self.vbox_separator = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin_top=5)
         
