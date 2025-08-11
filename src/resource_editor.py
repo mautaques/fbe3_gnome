@@ -115,14 +115,3 @@ class ResourceEditor(PageMixin, Gtk.Box):
         vadj.set_value(vadj.get_value() + delta_y)
         self.scrolled.set_hadjustment(hadj)
         self.scrolled.set_vadjustment(vadj)
-    
-    def update_scrolled_window(self):
-        hadj = self.scrolled.get_hadjustment()
-        vadj = self.scrolled.get_vadjustment()
-
-        delta_x, delta_y = self.system_render.renderer_set_size_request(self.scrolled.get_allocation())
-
-        hadj.set_value(hadj.get_value() + delta_x)
-        vadj.set_value(vadj.get_value() + delta_y)
-        self.scrolled.set_hadjustment(hadj)
-        self.scrolled.set_vadjustment(vadj)

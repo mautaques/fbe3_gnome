@@ -7,7 +7,6 @@ from .system_editor import SystemEditor
 from .system_config_editor import SystemConfigEditor
 from .fb_editor import FunctionBlockEditor
 from .export import ExportWindow
-from .fb_editor import FunctionBlockEditor
 
 @Gtk.Template(resource_path='/com/lapas/Fbe/menu.ui')
 class ProjectEditor(PageMixin, Gtk.Box):
