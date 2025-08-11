@@ -16,15 +16,6 @@ class FunctionBlockRenderer(Gtk.DrawingArea):
         self.inspected_block = inspected_block
         self.selected_connection = None
         self.offset_x, self.offset_y = 0, 0
-        
-    def resize_by_zoom(self, zoom_level):
-        old_height = self.get_content_height()
-        print(old_height)
-        print("\n")
-        old_width = self.get_content_width()
-        print(old_width)
-        self.set_content_height(old_height + zoom_level)
-        self.set_content_height(old_height + zoom_level)
 
     def draw_grid(self, cr):
         allocation = self.get_allocation()

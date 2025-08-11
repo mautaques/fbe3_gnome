@@ -704,7 +704,6 @@ class FunctionBlock():
     # ------------------------------------------------------------- #         
         
     def save(self, file_path_name=None):
-
         if file_path_name is None:
             if self._file_path_name is None:
                 return False
